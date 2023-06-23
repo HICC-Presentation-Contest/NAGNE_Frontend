@@ -33,8 +33,7 @@ export const Button = styled.TouchableOpacity`
   height: 42px;
   border-radius: 22px;
   width: 46%;
-`;
-
+`
 const TextInput = styled.TextInput`
   background-color: rgba(255, 255, 255, 0.15);
   padding: 15px 7px;
