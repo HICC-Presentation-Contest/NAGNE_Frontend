@@ -1,8 +1,11 @@
-import React,{useEffect} from 'react'
-import CardSection from '../components/CardSection'
+import React,{useEffect} from 'react';
+import Frame from '../assets/FIRST_1.png';
+import { Image } from 'react-native';
+import CardSection from '../components/CardSection';
 import axios from 'axios';
 import Header from '../components/Header';
 import { styled } from 'styled-components/native';
+import { ScreenHeight, ScreenWidth } from '../components/Shared';
 
 const ScreenLayout = styled.SafeAreaView`
   flex-direction: column;
@@ -38,11 +41,10 @@ const Home = () => {
         const tripData = response.data;
         console.log('Successfully fetched trip data:', tripData);
         } catch (error) {
-        console.error('Failed to fetch trip data:');
+        console.error('Failed to fetch trip data:',error.response);
         }
     };
     
-
     useEffect(() => {
         const exampleAddress = 'seoul';
         const examplePageable = {
@@ -52,11 +54,15 @@ const Home = () => {
 
     fetchTripData(exampleAddress, examplePageable);
     }, []);
+
     return (
-        <ScreenLayout>
-            <Header/> 
-            <CardSection data={cardsData}/>
-        </ScreenLayout>
+        <>
+            <Image source={Frame} style={{width:ScreenWidth,height:ScreenHeight,position:'absolute',marginTop:28,opacity:0.2}}/>
+            <ScreenLayout>
+                <Header/> 
+                <CardSection data={cardsData}/>
+            </ScreenLayout>
+        </>
     )
 }
 
