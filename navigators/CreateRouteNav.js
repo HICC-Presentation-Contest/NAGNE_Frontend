@@ -31,16 +31,14 @@ export default function CreateNoteNav() {
         title: '경로 작성'
       }}
     >
-
         <stack.Screen
         name='CreateRoute_1'
         component={CreateRoute_1}
         />      
         <stack.Screen
-        name='CreateRoute_2'
-        component={CreateRoute_2}
+          name='CreateRoute_2'
+          component={CreateRoute_2}
         />
-        
         <stack.Screen
         name='CreateRoute_3'
         component={CreateRoute_3}

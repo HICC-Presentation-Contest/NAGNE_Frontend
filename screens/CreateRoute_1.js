@@ -24,7 +24,7 @@ const CreateRoute_1 = ({ navigation }) => {
                 onChangeText={(text) => setValue('title', text)}
                 />
             </Container>
-            <Button onPress={()=>navigateTo2()}><ButtonText style={{color:'white',fontWeight:'bold'}}>다음</ButtonText></Button>
+            <Button onPress={()=>navigateTo2()}><ButtonText >다음</ButtonText></Button>
         </CreateRouteLayout>
         </>
     )

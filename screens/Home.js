@@ -45,15 +45,16 @@ const Home = () => {
         }
     };
     
-    useEffect(() => {
-        const exampleAddress = 'seoul';
-        const examplePageable = {
-        page: 1,
-        size: 10,
-        };
+    //백엔드에서 데이터 가져오는 구문
+    // useEffect(() => {
+    //     const exampleAddress = 'seoul';
+    //     const examplePageable = {
+    //     page: 1,
+    //     size: 10,
+    //     };
 
-    fetchTripData(exampleAddress, examplePageable);
-    }, []);
+    // fetchTripData(exampleAddress, examplePageable);
+    // }, []);
 
     return (
         <>
