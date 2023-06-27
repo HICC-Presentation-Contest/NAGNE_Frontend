@@ -33,7 +33,7 @@ export const Button = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  height: 42px;
+  height: 46px;
   border-radius: 22px;
   width: 46%;
 `
