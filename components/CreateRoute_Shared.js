@@ -66,7 +66,7 @@ export const Input = ({ innerRef, lastOne, ...data }) => {
 
 const SummaryContainer= styled.View`
 width: 100%;
-border-bottom-width: ${StyleSheet.hairlineWidth};
+border-bottom-width: ${StyleSheet.hairlineWidth}px;
 border-color: #84ADFF;
 `
 const SummaryText= styled.Text`
@@ -83,19 +83,14 @@ export const SummaryList = ({text})=> {
   )
 }
 
-const RouteContainer = styled.View`
-margin-top: 22px;
-width: ${ScreenWidth*0.67}px;
-padding: 6%;
-height: 360px;
-`
+
 const DeleteButton = styled.TouchableOpacity`
-background-color: black;
-width: 64px;
-height: 64px;
+background-color: grey;
+height: 32px;
+width: 32px;
 justify-content: center;
 align-items: center;
-border-radius: 16px;
+border-radius: 6px;
 `
 const DeleteButtonText= styled.Text`
 font-size: 20px;
@@ -113,25 +108,72 @@ const ImageAddButton = styled.TouchableOpacity`
   height: 100%;
   background-color: #f3f3f3;
 `
+const RouteContainer = styled.View`
+margin: 8px 0;
+margin-right: 16px;
+width: ${ScreenWidth*0.8}px;
+height: 400px;
+background-color: #EEF4FF;
+border-radius: 10px;
+padding: 4%;
+`
+const LocationContainer = styled.View`
+width:100%;
+height:100%;
+justify-content: space-between;
+`
+const LocationTitle=styled.Text`
+font-size: 20px;
+font-weight: 700;
+color: #0351EA;
+`
 const LocationImage= styled.Image`
 width: 100%;
-height: 100%;
+height: 240px;
 background-color: #e8e8e8;
+border-radius: 6px;
+margin-top: 8px;
+`
+const LocationDescription = styled.Text`
+background-color: white;
+border-radius: 6px;
+padding:1%;
+height: 20%;
+font-size: 20px;
+font-weight: 400;
+color: grey;
 `
 
 export const LocationList = () => {
+  let [title,setTitle]=useState('')
+  let [description,setDescription]=useState('')
+
   const [locations, setLocations] = useState([
   { 
-    title: "1", 
-    image:"", 
-    description: "1" 
+    title: "hello", 
+    image:"file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fnagne-native-2959e224-a56b-485e-8542-f96033dc10ad/ImagePicker/19377dc0-c7dd-4d54-89d0-99c178d456fc.jpeg", 
+    description: "description" ,
+    saved:true
   },
   { 
-    title: "2", 
+    title: "", 
     image:"", 
-    description: "3" 
-  }
-]);
+    description: "" ,
+    saved:false
+  },
+])
+//   const [locations, setLocations] = useState([
+//   { 
+//     title: "1", 
+//     image:"", 
+//     description: "1" 
+//   },
+//   { 
+//     title: "2", 
+//     image:"", 
+//     description: "3" 
+//   }
+// ]);
   
   const selectImage = async (index) => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -142,6 +184,7 @@ export const LocationList = () => {
     });
     if (!result.canceled) {
       updateLocation(index,"image",result.assets[0].uri)
+      console.log(locations)
     };
   };
 
@@ -164,49 +207,79 @@ export const LocationList = () => {
   }
   const saveLocations = () => {
     console.log("Saved Locations:", locations);
+    let newArr = [...locations];
+    newArr[locations.length-1].title=title;
+    newArr[locations.length-1].description=description;
+    newArr.push({ 
+      title: "", 
+      image:"", 
+      description: "" 
+    })
+    console.log("Saved Locations:", newArr);
+    setLocations(newArr)
+    setTitle('')
+    setDescription('')
   };
   const addItem = () => {
-
+    
   }
 
   const renderItem = ({ item, index }) => (
     <RouteContainer key={item.title}>
-      <Input
+      {(locations[index].saved==true)? (
+        <LocationContainer>
+          <View style={{flexDirection:'row',width:"100%",justifyContent:'space-between'}}>
+          <LocationTitle>{locations[index].title}</LocationTitle>
+          <DeleteButton
+          onPress={() => removeItem(index)}>
+          <DeleteButtonText>X</DeleteButtonText>
+        </DeleteButton>
+          </View>
+          <LocationImage style={{resizeMode:'contain'}} source={{uri: locations[index].image}}/>
+          <LocationDescription>{locations[index].description}</LocationDescription>
+        </LocationContainer>
+      ):(
+      <>
+        <Input
         autoFocus
+        value={locations[index].title}
         placeholder="제목 입력"
         returnKeyType="next"
         blurOnSubmit={false}
-        onChangeText={(value) => updateLocation(index,'title',value)}
-      />
-      <ImageContainer>
-        {locations[index].image ? (
-          <LocationImage
-          style={{resizeMode:'contain'}}
-          source={{uri:img}}
-          />
-          ):(
-          <ImageAddButton
-            onPress={()=>selectImage(index)}
-          >
-            <WithLocalSvg
-                    width={32}
-                    height={32}
-                    asset={Plus}
-                />
-          </ImageAddButton>)
-          }
-      </ImageContainer>
-       <Input
+        onChangeText={(value) => setTitle(value)}
+        />
+        <ImageContainer>
+          {locations[index].image ? (
+            <LocationImage
+            style={{resizeMode:'contain'}}
+            source={{uri:img}}
+            />
+            ):(
+            <ImageAddButton
+              onPress={()=>selectImage(index)}
+            >
+              <WithLocalSvg
+                      width={32}
+                      height={32}
+                      asset={Plus}
+                  />
+            </ImageAddButton>)
+            }
+        </ImageContainer>
+        <Input
+            value={locations[index].description}
             placeholder='설명'
             returnKeyType='next'
             blurOnSubmit={false}
-            onChangeText={(value) => updateLocation(index,'description',value)}
+            onChangeText={(value) => setDescription(value)}
           />
-      <DeleteButton style={{position:'absolute',top:'5%',right:'5%'}}
-        onPress={() => removeItem(index)}
-      >
-        <DeleteButtonText>X</DeleteButtonText>
-      </DeleteButton>
+        <DeleteButton style={{}}
+          onPress={() => removeItem(index)}>
+          <DeleteButtonText>X</DeleteButtonText>
+        </DeleteButton>
+      </>
+      )}
+      
     </RouteContainer>
   );
 
@@ -218,7 +291,7 @@ export const LocationList = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.title}
       />
-      <Button style={{marginTop:64}} onPress={addItem}>
+      <Button onPress={saveLocations}>
         <ButtonText>장소 추가</ButtonText>
       </Button>
     </View>
