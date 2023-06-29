@@ -1,6 +1,6 @@
 import { styled } from 'styled-components/native';
 import {StyleSheet,View,FlatList,Text } from 'react-native';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ScreenWidth } from './Shared';
 import Plus from '../assets/images/add_None.svg'
 import { WithLocalSvg } from 'react-native-svg';
@@ -73,6 +73,12 @@ const SummaryText= styled.Text`
 margin: 10px 6%;
 color:#AFAFAF;
 `
+const LocationInput = styled.TextInput`
+  border-radius: 6px;
+  padding: 4px;
+  background-color: white;
+  width:100%;
+`
 
 
 export const SummaryList = ({text})=> {
@@ -82,7 +88,6 @@ export const SummaryList = ({text})=> {
     </SummaryContainer>
   )
 }
-
 
 const DeleteButton = styled.TouchableOpacity`
 background-color: grey;
@@ -99,14 +104,15 @@ color: white;
 `
 const ImageContainer = styled.View`
   width:100%;
-  height: 200px;
+  height: 240px;
 `
 
 const ImageAddButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-color: #f3f3f3;
+  background-color: white;
+  border-radius: 6px;
 `
 const RouteContainer = styled.View`
 margin: 8px 0;
@@ -125,36 +131,30 @@ justify-content: space-between;
 const LocationTitle=styled.Text`
 font-size: 20px;
 font-weight: 700;
-color: #0351EA;
+color: #84ADFF;
 `
 const LocationImage= styled.Image`
 width: 100%;
 height: 240px;
 background-color: #e8e8e8;
 border-radius: 6px;
-margin-top: 8px;
 `
 const LocationDescription = styled.Text`
-background-color: white;
 border-radius: 6px;
 padding:1%;
 height: 20%;
-font-size: 20px;
+font-size: 15px;
 font-weight: 400;
-color: grey;
+color: #AFAFAF;
 `
 
 export const LocationList = () => {
   let [title,setTitle]=useState('')
   let [description,setDescription]=useState('')
+  let [img,setImg]=useState('')
+  const flatList=useRef(null)
 
   const [locations, setLocations] = useState([
-  { 
-    title: "hello", 
-    image:"file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fnagne-native-2959e224-a56b-485e-8542-f96033dc10ad/ImagePicker/19377dc0-c7dd-4d54-89d0-99c178d456fc.jpeg", 
-    description: "description" ,
-    saved:true
-  },
   { 
     title: "", 
     image:"", 
@@ -162,18 +162,6 @@ export const LocationList = () => {
     saved:false
   },
 ])
-//   const [locations, setLocations] = useState([
-//   { 
-//     title: "1", 
-//     image:"", 
-//     description: "1" 
-//   },
-//   { 
-//     title: "2", 
-//     image:"", 
-//     description: "3" 
-//   }
-// ]);
   
   const selectImage = async (index) => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -183,8 +171,7 @@ export const LocationList = () => {
       aspect: [10,8]
     });
     if (!result.canceled) {
-      updateLocation(index,"image",result.assets[0].uri)
-      console.log(locations)
+      setImg(result.assets[0].uri)
     };
   };
 
@@ -194,34 +181,23 @@ export const LocationList = () => {
     );
   };
 
-  const updateLocation = (id,type,value) => {
+  const updateLocation = () => {
     let newArr = [...locations];
-    if (type='title'){
-      locations[id].title=value;
-    } else if (type='description'){
-      locations[id].description=value;
-    } else {
-      locations[id].image = value
-    }
-    setLocations(newArr)
-  }
-  const saveLocations = () => {
-    console.log("Saved Locations:", locations);
-    let newArr = [...locations];
-    newArr[locations.length-1].title=title;
-    newArr[locations.length-1].description=description;
+    newArr[locations.length-1].title=title
+    newArr[locations.length-1].description=description
+    newArr[locations.length-1].saved=true
+    newArr[locations.length-1].image=img
     newArr.push({ 
       title: "", 
       image:"", 
-      description: "" 
+      description: "" ,
+      saved:false
     })
-    console.log("Saved Locations:", newArr);
     setLocations(newArr)
     setTitle('')
     setDescription('')
-  };
-  const addItem = () => {
-    
+    setImg('')
+    console.log(locations)
   }
 
   const renderItem = ({ item, index }) => (
@@ -230,26 +206,33 @@ export const LocationList = () => {
         <LocationContainer>
           <View style={{flexDirection:'row',width:"100%",justifyContent:'space-between'}}>
           <LocationTitle>{locations[index].title}</LocationTitle>
-          <DeleteButton
-          onPress={() => removeItem(index)}>
+          <DeleteButton onPress={() => removeItem(index)}>
           <DeleteButtonText>X</DeleteButtonText>
         </DeleteButton>
           </View>
           <LocationImage style={{resizeMode:'contain'}} source={{uri: locations[index].image}}/>
           <LocationDescription>{locations[index].description}</LocationDescription>
         </LocationContainer>
+
       ):(
-      <>
-        <Input
-        autoFocus
-        value={locations[index].title}
-        placeholder="제목 입력"
-        returnKeyType="next"
-        blurOnSubmit={false}
-        onChangeText={(value) => setTitle(value)}
-        />
+      <LocationContainer>
+        <View style={{flexDirection:'row',width:"100%",justifyContent:'space-between'}}>
+          <LocationInput
+          style = {{width:"85%"}}
+          autoFocus
+          value={title}
+          placeholder="제목 입력"
+          returnKeyType="next"
+          blurOnSubmit={false}
+          onChangeText={(value) => setTitle(value)}
+          />
+          <DeleteButton
+            onPress={() => removeItem(index)}>
+            <DeleteButtonText>X</DeleteButtonText>
+          </DeleteButton>
+        </View>
         <ImageContainer>
-          {locations[index].image ? (
+          {img ? (
             <LocationImage
             style={{resizeMode:'contain'}}
             source={{uri:img}}
@@ -266,20 +249,17 @@ export const LocationList = () => {
             </ImageAddButton>)
             }
         </ImageContainer>
-        <Input
-            value={locations[index].description}
-            placeholder='설명'
-            returnKeyType='next'
-            blurOnSubmit={false}
-            onChangeText={(value) => setDescription(value)}
-          />
-        <DeleteButton style={{}}
-          onPress={() => removeItem(index)}>
-          <DeleteButtonText>X</DeleteButtonText>
-        </DeleteButton>
-      </>
+        <LocationInput
+          style = {{height:"20%"}}
+          value={description}
+          placeholder='설명'
+          returnKeyType='next'
+          blurOnSubmit={false}
+          onChangeText={(value) => setDescription(value)}
+        />
+      </LocationContainer>
       )}
-      
+    
     </RouteContainer>
   );
 
@@ -290,8 +270,12 @@ export const LocationList = () => {
         data={locations}
         renderItem={renderItem}
         keyExtractor={(item) => item.title}
+        ref={flatList}
+        onContentSizeChange={()=> {
+          flatList.current.scrollToEnd();
+        }}
       />
-      <Button onPress={saveLocations}>
+      <Button onPress={updateLocation}>
         <ButtonText>장소 추가</ButtonText>
       </Button>
     </View>
@@ -325,59 +309,3 @@ export const regions = [
   {name:"중구",  id:24},    
   {name:"중랑구", id:25}
 ]
-
-
-
-
-
-// const ItemContainer= styled.View`
-// flex-direction: row;
-// align-items: center;
-// padding: 10px;
-// border-bottom-width: ${StyleSheet.hairlineWidth};
-// border-color: #ccc;
-// `
-// const ItemTitle=styled.Text`
-// font-size: 18px;
-// font-weight: bold;
-// color: #333;
-// `
-// const DropDownButton = styled.TouchableOpacity`
-// margin-left: 10px;
-// `
-// const DropDownButtonTitle= styled.Text`
-// font-size: 18px;
-// font-weight: bold;
-// `
-
-// const ItemDescription = styled.Text`
-// margin-top: 5px;
-// padding: 0px 20px;
-// `
-
-// const LocationList = () => {
-  //   const [selectedItem, setSelectedItem] = useState(null);
-  //   const onPressDropdown = id => {
-  //     setSelectedItem(selectedItem === id ? null : id);
-  //   };
-  //   const renderLocationItem = ({item}) => (
-  //     <ItemContainer  key={item.id}>
-  //       <ItemTitle>{item.name}</ItemTitle>
-  //       <DropDownButton
-  //         onPress={() => onPressDropdown(item.id)}>
-  //         <DropDownButtonTitle>{selectedItem === item.id ? '▲' : '▼'}</DropDownButtonTitle>
-  //       </DropDownButton>
-  //       {selectedItem === item.id && (
-  //         <ItemDescription>{item.description}</ItemDescription>
-  //       )}
-  //     </ItemContainer>
-  //   );
-  
-  //   return (
-  //     <FlatList
-  //       data={location}
-  //       renderItem={renderLocationItem}
-  //       keyExtractor={item => `${item.id}`}
-  //     />
-  //   );
-  // };

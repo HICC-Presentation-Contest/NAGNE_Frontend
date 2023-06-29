@@ -16,7 +16,6 @@ const CreateRoute_3 = ({route}) => {
         <Title>경로를 입력해주세요 (최대 5개)</Title>
         <LocationList/>
     </Container>
-    <Button onPress={()=>addLocation()}><ButtonText>장소 추가</ButtonText></Button>
     <Button onPress={()=>navigateTo2()}><ButtonText>다음</ButtonText></Button>
 </CreateRouteLayout>
   )
