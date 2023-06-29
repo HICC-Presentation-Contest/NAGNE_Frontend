@@ -4,7 +4,8 @@ import * as ImagePicker from 'expo-image-picker';
 import styled from 'styled-components/native';
 import {  WithLocalSvg } from 'react-native-svg';
 import Plus from '../assets/images/add_None.svg'
-import { FlatList } from 'react-native';
+import { FlatList,View,Text,TouchableOpacity } from 'react-native';
+import { useForm } from 'react-hook-form';
 
 const ImageContainer = styled.View`
   width:100%;
@@ -26,8 +27,11 @@ height: 100%;
 background-color: #e8e8e8;
 `
 const CreateRoute_3 = ({route}) => {
+  const [inputs, setInputs] = useState({ title: '', description: ''});
   let [img,setImg]= useState(null)
+  let [id,setId]= useState(0)
   let [location,setLocation]= useState([])
+
   const selectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -38,31 +42,67 @@ const CreateRoute_3 = ({route}) => {
     });
     if (!result.canceled) {
       setImg('data:image/png;base64,'+ result.assets[0].base64);
+      console.log("img Added")
     };
   };
-  const addLocation = ()=> {
-    const { storeName,storeDescription } = getValues();
 
-    setValue('storeName','')
-    setValue('storeDescription','')
-    navigation.navigate('CreateRoute_2',{storeName,storeDescription})
-}
-  return (
-    <CreateRouteLayout>
+  const onChangeText = (key, value) => {
+    setInputs({
+      ...inputs,
+      [key]: value,
+    });
+  };
+
+  const clearAllTextInputs = () => {
+    setInputs({ title: '', description: '' });
+  };
+
+  const LocationList = () => {
+    const [selectedItem, setSelectedItem] = useState(null);
+    const onPressDropdown = id => {
+      setSelectedItem(selectedItem === id ? null : id);
+    };
+    const renderLocationItem = ({item}) => (
+      <View key={item.id}>
+        <Text>{item.name}</Text>
+        <TouchableOpacity
+          onPress={() => onPressDropdown(item.id)}>
+          <Text>{selectedItem === item.id ? '▲' : '▼'}</Text>
+        </TouchableOpacity>
+        {selectedItem === item.id && (
+          <Text>{item.description}</Text>
+        )}
+      </View>
+    );
+  
+    return (
       <FlatList
-        data={Location}
+        data={location}
         renderItem={renderLocationItem}
         keyExtractor={item => `${item.id}`}
       />
+    );
+  };
+
+  const addLocation = ()=> {
+    console.log(id,inputs.title, inputs.description)
+    setLocation([...location,{id,name :inputs.title, img, description: inputs.description}])
+    setId(id+1);
+    clearAllTextInputs();
+}
+  return (
+    <CreateRouteLayout>
+      <LocationList/>
     <Container>
         <Title>경로를 입력해주세요 (최대 5개)</Title>
         <RouteContainer>
           <Input
           autoFocus
+          value={inputs.title}
           placeholder='제목 입력'
           returnKeyType='next'
-          blurOnSubmit={false}
-          onChangeText={(text) => setValue('storeName', text)}
+          // blurOnSubmit={false}
+          onChangeText={(text) => onChangeText('title', text)}
           />
           <ImageContainer>
           {img?(
@@ -84,9 +124,9 @@ const CreateRoute_3 = ({route}) => {
           </ImageContainer>
           <Input
             placeholder='설명'
+            value={inputs.description}
             returnKeyType='next'
-            blurOnSubmit={false}
-            onChangeText={(text) => setValue('storeDescription', text)}
+            onChangeText={(text) => onChangeText('description', text)}
           />
         </RouteContainer>
     </Container>
