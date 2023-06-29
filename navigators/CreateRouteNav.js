@@ -32,16 +32,16 @@ export default function CreateNoteNav() {
       }}
     >
         <stack.Screen
-          name='CreateRoute_3'
-          component={CreateRoute_3}
-        />
-        <stack.Screen
         name='CreateRoute_1'
         component={CreateRoute_1}
         />      
         <stack.Screen
           name='CreateRoute_2'
           component={CreateRoute_2}
+        />
+        <stack.Screen
+          name='CreateRoute_3'
+          component={CreateRoute_3}
         />
     </stack.Navigator>
     </>

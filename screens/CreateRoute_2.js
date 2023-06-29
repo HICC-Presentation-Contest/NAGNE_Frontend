@@ -27,8 +27,8 @@ const CreateRoute_2 = ({navigation,route}) => {
   const [selectedRegion, setSelectedRegion] = useState(null);
   const navigateTo3 = ()=> {
     let name =route.params.title;
-    let regionId= selectedRegion;
-      navigation.navigate('CreateRoute_3',{name, regionId})
+    let region= regions[selectedRegion];
+      navigation.navigate('CreateRoute_3',{name, region})
   }
   return (
     <ScrollView style = {{width:'100%'}} showsVerticalScrollIndicator={false}>

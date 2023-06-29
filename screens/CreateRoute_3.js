@@ -1,11 +1,10 @@
 import React,{ useState }  from 'react'
-import { Button, ButtonText, Container, CreateRouteLayout, Input, Title } from '../components/CreateRoute_Shared'
+import { Button, ButtonText, Container, CreateRouteLayout, Input, SummaryList, Title } from '../components/CreateRoute_Shared'
 import * as ImagePicker from 'expo-image-picker';
 import styled from 'styled-components/native';
 import {  WithLocalSvg } from 'react-native-svg';
 import Plus from '../assets/images/add_None.svg'
-import { FlatList,View,Text,TouchableOpacity } from 'react-native';
-import { useForm } from 'react-hook-form';
+import { View } from 'react-native';
 
 const ImageContainer = styled.View`
   width:100%;
@@ -26,10 +25,13 @@ width: 100%;
 height: 100%;
 background-color: #e8e8e8;
 `
+
+
 const CreateRoute_3 = ({route}) => {
+  let title =route.params.name;
+  let region= route.params.region;
   const [inputs, setInputs] = useState({ title: '', description: ''});
   let [img,setImg]= useState(null)
-  let [id,setId]= useState(0)
   let [location,setLocation]= useState([])
 
   const selectImage = async () => {
@@ -37,12 +39,10 @@ const CreateRoute_3 = ({route}) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
       allowsEditing: true,
-      aspect: [10,8],
-      base64:true
+      aspect: [10,8]
     });
     if (!result.canceled) {
-      setImg('data:image/png;base64,'+ result.assets[0].base64);
-      console.log("img Added")
+      setImg(result.assets[0].uri);
     };
   };
 
@@ -54,45 +54,23 @@ const CreateRoute_3 = ({route}) => {
   };
 
   const clearAllTextInputs = () => {
+    setImg(null)
     setInputs({ title: '', description: '' });
   };
 
-  const LocationList = () => {
-    const [selectedItem, setSelectedItem] = useState(null);
-    const onPressDropdown = id => {
-      setSelectedItem(selectedItem === id ? null : id);
-    };
-    const renderLocationItem = ({item}) => (
-      <View key={item.id}>
-        <Text>{item.name}</Text>
-        <TouchableOpacity
-          onPress={() => onPressDropdown(item.id)}>
-          <Text>{selectedItem === item.id ? '▲' : '▼'}</Text>
-        </TouchableOpacity>
-        {selectedItem === item.id && (
-          <Text>{item.description}</Text>
-        )}
-      </View>
-    );
   
-    return (
-      <FlatList
-        data={location}
-        renderItem={renderLocationItem}
-        keyExtractor={item => `${item.id}`}
-      />
-    );
-  };
-
   const addLocation = ()=> {
-    console.log(id,inputs.title, inputs.description)
     setLocation([...location,{id,name :inputs.title, img, description: inputs.description}])
+    console.log(location)
     setId(id+1);
     clearAllTextInputs();
 }
   return (
-    <CreateRouteLayout>
-      <LocationList/>
+    <CreateRouteLayout style={{justifyContent:'space-between'}}>
+      <View style={{width:'100%'}}>
+        <SummaryList text={title}/>
+        <SummaryList text={region.name}/>
+      </View>
     <Container>
         <Title>경로를 입력해주세요 (최대 5개)</Title>
         <RouteContainer>
@@ -101,7 +79,7 @@ const CreateRoute_3 = ({route}) => {
           value={inputs.title}
           placeholder='제목 입력'
           returnKeyType='next'
-          // blurOnSubmit={false}
+          blurOnSubmit={false}
           onChangeText={(text) => onChangeText('title', text)}
           />
           <ImageContainer>

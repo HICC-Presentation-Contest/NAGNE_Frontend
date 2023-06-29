@@ -1,5 +1,5 @@
 import { styled } from 'styled-components/native';
-
+import {StyleSheet,View } from 'react-native';
 export const CreateRouteLayout = styled.SafeAreaView`
     flex-direction: column;
     align-items: center;
@@ -36,6 +36,7 @@ export const Button = styled.TouchableOpacity`
   height: 46px;
   border-radius: 22px;
   width: 46%;
+  margin-bottom: 64px;
 `
 const TextInput = styled.TextInput`
   background-color: rgba(255, 255, 255, 0.15);
@@ -57,7 +58,84 @@ export const Input = ({ innerRef, lastOne, ...data }) => {
   );
 };
 
+const SummaryContainer= styled.View`
+width: 100%;
+border-bottom-width: ${StyleSheet.hairlineWidth};
+border-color: #84ADFF;
+`
+const SummaryText= styled.Text`
+margin: 10px 6%;
+color:#AFAFAF;
+`
 
+export const SummaryList = ({text})=> {
+  return (
+    <SummaryContainer>
+      <SummaryText>{text}</SummaryText>
+    </SummaryContainer>
+  )
+}
+
+const RouteContainer = styled.View`
+margin-top: 22px;
+width:100%;
+`
+
+export const LocationList = () => {
+  const [inputs, setInputs] = useState({ title: "", description: "" });
+  const [locations, setLocations] = useState([]);
+
+  const onChangeText = (key, value) => {
+    setInputs({
+      ...inputs,
+      [key]: value,
+    });
+  };
+
+  const removeItem = (index) => {
+    setLocations((prevLocations) =>
+      prevLocations.filter((_, i) => i !== index)
+    );
+  };
+
+  const saveLocations = () => {
+    console.log("Saved Locations:", locations);
+  };
+  
+  const renderItem = ({ item, index }) => (
+    <RouteContainer key={item.title}>
+      <Input
+        autoFocus
+        value={item.title}
+        placeholder="제목 입력"
+        returnKeyType="next"
+        blurOnSubmit={false}
+        onChangeText={(text) => onChangeText("title", text)}
+      />
+      {/* 삭제 버튼 */}
+      <Button
+        onPress={() => removeItem(index)}
+      >
+        <Text>X</Text>
+      </Button>
+    </RouteContainer>
+  );
+
+  return (
+    <View>
+      <FlatList
+        horizontal
+        data={locations}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.title}
+      />
+      {/* 저장 버튼 */}
+      <Button onPress={saveLocations}>
+        <ButtonText>Save Locations</ButtonText>
+      </Button>
+    </View>
+  );
+};
 
 export const regions = [
   {name:"강동구", id:1},
@@ -86,3 +164,59 @@ export const regions = [
   {name:"중구",  id:24},    
   {name:"중랑구", id:25}
 ]
+
+
+
+
+
+// const ItemContainer= styled.View`
+// flex-direction: row;
+// align-items: center;
+// padding: 10px;
+// border-bottom-width: ${StyleSheet.hairlineWidth};
+// border-color: #ccc;
+// `
+// const ItemTitle=styled.Text`
+// font-size: 18px;
+// font-weight: bold;
+// color: #333;
+// `
+// const DropDownButton = styled.TouchableOpacity`
+// margin-left: 10px;
+// `
+// const DropDownButtonTitle= styled.Text`
+// font-size: 18px;
+// font-weight: bold;
+// `
+
+// const ItemDescription = styled.Text`
+// margin-top: 5px;
+// padding: 0px 20px;
+// `
+
+// const LocationList = () => {
+  //   const [selectedItem, setSelectedItem] = useState(null);
+  //   const onPressDropdown = id => {
+  //     setSelectedItem(selectedItem === id ? null : id);
+  //   };
+  //   const renderLocationItem = ({item}) => (
+  //     <ItemContainer  key={item.id}>
+  //       <ItemTitle>{item.name}</ItemTitle>
+  //       <DropDownButton
+  //         onPress={() => onPressDropdown(item.id)}>
+  //         <DropDownButtonTitle>{selectedItem === item.id ? '▲' : '▼'}</DropDownButtonTitle>
+  //       </DropDownButton>
+  //       {selectedItem === item.id && (
+  //         <ItemDescription>{item.description}</ItemDescription>
+  //       )}
+  //     </ItemContainer>
+  //   );
+  
+  //   return (
+  //     <FlatList
+  //       data={location}
+  //       renderItem={renderLocationItem}
+  //       keyExtractor={item => `${item.id}`}
+  //     />
+  //   );
+  // };
