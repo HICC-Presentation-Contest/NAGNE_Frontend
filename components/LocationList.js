@@ -2,17 +2,11 @@ import { useRef, useState } from 'react';
 import Plus from '../assets/images/add_None.svg';
 import { WithLocalSvg } from 'react-native-svg';
 import * as ImagePicker from 'expo-image-picker';
-import { View, FlatList, Alert } from 'react-native';
+import { View, FlatList, Alert, Keyboard } from 'react-native';
 import { styled } from 'styled-components/native';
 import { ScreenWidth } from './Shared';
-import { Button, ButtonText } from './CreateRoute_Shared';
-
-const LocationInput = styled.TextInput`
-  border-radius: 6px;
-  padding: 4px;
-  background-color: white;
-  width: 100%;
-`;
+import { Button, ButtonText, Title } from './CreateRoute_Shared';
+import Check from '../assets/images/check.svg';
 
 const DeleteButton = styled.TouchableOpacity`
   background-color: grey;
@@ -43,16 +37,24 @@ const RouteContainer = styled.View`
   margin: 8px 0;
   margin-right: 16px;
   width: ${ScreenWidth * 0.8}px;
-  height: 400px;
+  height: 420px;
   background-color: #eef4ff;
   border-radius: 10px;
   padding: 4%;
+  margin-bottom: 64px;
 `;
+// 40 + 240 + 400
 const LocationContainer = styled.View`
-  width: 100%;
   height: 100%;
   justify-content: space-between;
 `;
+
+const LocationInputHeader = styled.View`
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+`;
+
 const LocationTitle = styled.Text`
   font-size: 20px;
   font-weight: 700;
@@ -71,6 +73,48 @@ const LocationDescription = styled.Text`
   font-size: 15px;
   font-weight: 400;
   color: #afafaf;
+`;
+const LocationInput = styled.TextInput`
+  border-radius: 6px;
+  padding: 4px;
+  background-color: white;
+  width: 100%;
+  height: 32px;
+`;
+const LocationDescriptionInput = styled.TextInput`
+  border-radius: 6px;
+  padding: 4px;
+  background-color: white;
+  width: 100%;
+  height: 60px;
+  margin-bottom: 40px;
+`;
+
+const LocationAddButton = styled.TouchableOpacity`
+  position: absolute;
+  width: 120px;
+  height: 64px;
+  bottom: -40px;
+  box-shadow: 16px 12px 12px black;
+  border-radius: 12px;
+  left: ${ScreenWidth * 0.375 - 60}px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const TitleContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  width: 90%;
+  align-items: center;
+  margin-bottom: 16px;
+  margin-top: 24px;
+`;
+
+const DetailText = styled.Text`
+  font-size: 16px;
+  font-weight: 40;
+  color: #0351ea;
 `;
 
 export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
@@ -103,9 +147,9 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
     setLocations(prevLocations => prevLocations.filter((_, i) => i !== index));
   };
 
-  const handleNext = () => {
-    //locations 중에 saved만 필터하는 기능 필요**
-    parentFunction(routeName, routeRegion, locations);
+  const handleSubmit = () => {
+    let filteredArr = locations.filter(item => item.saved == true);
+    parentFunction(routeName, routeRegion, filteredArr);
   };
   const updateLocation = () => {
     let newArr = [...locations];
@@ -145,20 +189,23 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
         </LocationContainer>
       ) : (
         <LocationContainer>
-          <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
+          <LocationInputHeader>
             <LocationInput
               style={{ width: '85%' }}
               autoFocus
               value={title}
               placeholder="제목 입력"
               returnKeyType="next"
+              onSubmitEditing={() => {
+                selectImage(index);
+              }}
               blurOnSubmit={false}
               onChangeText={value => setTitle(value)}
             />
             <DeleteButton onPress={() => removeItem(index)}>
               <DeleteButtonText>X</DeleteButtonText>
             </DeleteButton>
-          </View>
+          </LocationInputHeader>
           <ImageContainer>
             {img ? (
               <LocationImage style={{ resizeMode: 'contain' }} source={{ uri: img }} />
@@ -168,14 +215,44 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
               </ImageAddButton>
             )}
           </ImageContainer>
-          <LocationInput
-            style={{ height: '20%' }}
+          <LocationDescriptionInput
             value={description}
             placeholder="설명"
-            returnKeyType="next"
+            returnKeyType="done"
             blurOnSubmit={false}
+            onSubmitEditing={() => {
+              Keyboard.dismiss();
+            }}
             onChangeText={value => setDescription(value)}
           />
+          <LocationAddButton
+            disabled={title && img && description ? false : true}
+            style={
+              title && img && description
+                ? {
+                    elevation: 2,
+                    backgroundColor: 'white',
+                  }
+                : {
+                    elevation: 0,
+                    backgroundColor: '#D9D9D9',
+                  }
+            }
+            onPress={updateLocation}
+          >
+            <WithLocalSvg
+              style={
+                title && img && description
+                  ? { color: '#0351EA' }
+                  : {
+                      color: '#AAAAAA',
+                    }
+              }
+              width={40}
+              height={40}
+              asset={Check}
+            />
+          </LocationAddButton>
         </LocationContainer>
       )}
     </RouteContainer>
@@ -183,6 +260,10 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
 
   return (
     <View style={{ width: ScreenWidth, marginLeft: '-6%', alignItems: 'center' }}>
+      <TitleContainer>
+        <Title>경로를 입력해주세요 (최대 5개)</Title>
+        <DetailText>{locations.filter(item => item.saved == true).length}/5</DetailText>
+      </TitleContainer>
       <FlatList
         horizontal
         data={locations}
@@ -190,21 +271,12 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
         keyExtractor={item => item.title}
         ref={flatList}
         onContentSizeChange={() => {
-          flatList.current.scrollToEnd();
+          setTimeout(() => {
+            flatList.current.scrollToEnd();
+          }, 500);
         }}
       />
-      <Button
-        style={
-          {
-            //필드값 안 채워지면 바로 그냥 색상 지워버리기**
-          }
-        }
-        onPress={updateLocation}
-      >
-        <ButtonText>장소 추가</ButtonText>
-      </Button>
-
-      <Button onPress={handleNext}>
+      <Button onPress={handleSubmit}>
         <ButtonText>다음</ButtonText>
       </Button>
     </View>

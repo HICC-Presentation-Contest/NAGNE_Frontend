@@ -4,11 +4,11 @@ import { LocationList } from '../components/LocationList';
 import { View } from 'react-native';
 
 const CreateRoute_3 = ({ route, navigation }) => {
-  let title = route.params.name;
+  let title = route.params.title;
   let region = route.params.region;
-
-  const navigateTo4 = (routeName, routeRegion, locations) => {
-    navigation.navigate('CreateRoute_4', { routeName, routeRegion, locations });
+  const navigateTo4 = (title, region, locations) => {
+    console.log(title, region, locations);
+    navigation.navigate('CreateRoute_4', { title, region, locations });
   };
   return (
     <CreateRouteLayout style={{ justifyContent: 'space-between' }}>
@@ -17,7 +17,6 @@ const CreateRoute_3 = ({ route, navigation }) => {
         <SummaryList text={region.name} />
       </View>
       <Container>
-        <Title>경로를 입력해주세요 (최대 5개)</Title>
         <LocationList routeName={title} routeRegion={region} parentFunction={navigateTo4} />
       </Container>
     </CreateRouteLayout>

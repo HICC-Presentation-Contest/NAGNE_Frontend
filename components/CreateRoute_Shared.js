@@ -10,6 +10,10 @@ export const CreateRouteLayout = styled.SafeAreaView`
   flex: 1;
   /* background-color: chartreuse; */
 `;
+export const Blank24px = styled.View`
+  height: 24px;
+  width: 100%;
+`;
 export const Container = styled.SafeAreaView`
   flex-direction: column;
   justify-content: center;
@@ -20,7 +24,7 @@ export const Title = styled.Text`
   font-size: 20px;
   font-weight: bold;
   color: #0351ea;
-  margin-bottom: 12px;
+  /* margin-bottom: 12px; */
 `;
 export const ButtonText = styled.Text`
   font-size: 16px;

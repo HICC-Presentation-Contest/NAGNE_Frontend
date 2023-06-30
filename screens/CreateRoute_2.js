@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button, ButtonText, Container, CreateRouteLayout, Title } from '../components/CreateRoute_Shared';
+import { Blank24px, Button, ButtonText, Container, CreateRouteLayout, Title } from '../components/CreateRoute_Shared';
 import { Text, ScrollView } from 'react-native';
 import { regions } from '../components/CreateRoute_Shared';
 import styled from 'styled-components/native';
@@ -24,16 +24,21 @@ const ListItem = styled.TouchableOpacity`
 `;
 const CreateRoute_2 = ({ navigation, route }) => {
   const [selectedRegion, setSelectedRegion] = useState(null);
+  let title = route.params.title;
   const navigateTo3 = () => {
-    let name = route.params.title;
     let region = regions[selectedRegion];
-    navigation.navigate('CreateRoute_3', { name, region });
+    navigation.navigate('CreateRoute_3', {
+      title,
+      region,
+      location: [],
+    });
   };
   return (
     <ScrollView style={{ width: '100%' }} showsVerticalScrollIndicator={false}>
       <CreateRouteLayout>
         <Container>
           <Title style={{ marginTop: 24 }}>여정의 위치를 알려주세요</Title>
+          <Blank24px />
           <RegionContainer>
             {regions.map((region, index) => (
               <ListItem
