@@ -7,6 +7,7 @@ import {
   Container,
   CreateRouteLayout,
   Title,
+  CreateRouteHeader,
 } from '../components/CreateRoute_Shared';
 import { useForm } from 'react-hook-form';
 
@@ -16,19 +17,19 @@ const CreateRoute_1 = ({ navigation }) => {
     const { title } = getValues();
     navigation.navigate('CreateRoute_2', {
       title,
-      region: '',
-      location: [],
     });
   };
   return (
     <>
       {/* <Image source={Frame} style={{zIndex:999, width:ScreenWidth,height:ScreenHeight,position:'absolute',marginTop:'-24%',opacity:0}}/> */}
       <CreateRouteLayout>
-        <Container>
+        <Container style={{ marginTop: '50%' }}>
           <Title>여정의 이름을 알려주세요</Title>
           <Blank24px />
           <Input
+            placeholderTextColor="#84ADFF"
             autoFocus
+            onSubmitEditing={() => navigateTo2()}
             placeholder="제목 입력"
             returnKeyType="next"
             blurOnSubmit={false}

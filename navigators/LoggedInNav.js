@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import CreateNoteNav from './CreateRouteNav';
 import Home from '../screens/Home';
+import Test from '../screens/Test';
 import TabIcon from '../components/nav/TabIcon';
 
 const Tabs = createBottomTabNavigator();
@@ -19,8 +20,8 @@ export default function LoggedInNav() {
         tabBarActiveTintColor: 'white',
       }}
     >
-    <Tabs.Screen
-        name='Home'
+      <Tabs.Screen
+        name="Home"
         component={Home}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
@@ -28,8 +29,9 @@ export default function LoggedInNav() {
           ),
         }}
       />
-    <Tabs.Screen
-        name='CreateRoute'
+      <Tabs.Screen name="Test" component={Test} />
+      <Tabs.Screen
+        name="CreateRoute"
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons name={'add-circle-outline'} color={color} size={focused ? 22 : 18} />

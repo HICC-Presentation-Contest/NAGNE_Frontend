@@ -1,11 +1,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { TouchableOpacity, Image } from 'react-native';
 import CreateRoute_1 from '../screens/CreateRoute_1';
 import CreateRoute_2 from '../screens/CreateRoute_2';
 import CreateRoute_3 from '../screens/CreateRoute_3';
 import CreateRoute_4 from '../screens/CreateRoute_4';
-import { WithLocalSvg } from 'react-native-svg';
-import LeftArrow from '../assets/images/left_arrow.svg';
+import leftArrow from '../assets/images/left_arrow.png';
 
 const stack = createNativeStackNavigator();
 
@@ -15,11 +13,7 @@ export default function CreateNoteNav() {
       <stack.Navigator
         screenOptions={{
           headerShown: true,
-          headerLeft: ({ onPress }) => (
-            <TouchableOpacity onPress={onPress}>
-              <WithLocalSvg width={24} height={24} asset={LeftArrow} />
-            </TouchableOpacity>
-          ),
+          headerBackImageSource: leftArrow,
           headerTitleAlign: 'center',
           headerTitleStyle: {
             fontWeight: 'bold',

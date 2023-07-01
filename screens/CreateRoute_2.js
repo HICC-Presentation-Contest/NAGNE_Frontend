@@ -30,7 +30,6 @@ const CreateRoute_2 = ({ navigation, route }) => {
     navigation.navigate('CreateRoute_3', {
       title,
       region,
-      location: [],
     });
   };
   return (
@@ -63,6 +62,7 @@ const CreateRoute_2 = ({ navigation, route }) => {
           </RegionContainer>
         </Container>
         <Button
+          disabled={selectedRegion ? false : true}
           onPress={() => {
             navigateTo3();
           }}

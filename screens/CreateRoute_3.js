@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, ButtonText, Container, CreateRouteLayout, SummaryList, Title } from '../components/CreateRoute_Shared';
+import React from 'react';
+import { Container, CreateRouteLayout, SummaryList } from '../components/CreateRoute_Shared';
 import { LocationList } from '../components/LocationList';
 import { View } from 'react-native';
 
@@ -7,7 +7,6 @@ const CreateRoute_3 = ({ route, navigation }) => {
   let title = route.params.title;
   let region = route.params.region;
   const navigateTo4 = (title, region, locations) => {
-    console.log(title, region, locations);
     navigation.navigate('CreateRoute_4', { title, region, locations });
   };
   return (

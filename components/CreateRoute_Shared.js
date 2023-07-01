@@ -1,10 +1,12 @@
 import { styled } from 'styled-components/native';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity, TouchableOpacityBase } from 'react-native';
+import { WithLocalSvg } from 'react-native-svg';
+import LeftArrow from '../assets/images/left_arrow.svg';
 
 export const CreateRouteLayout = styled.SafeAreaView`
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-between;
   background-color: white;
   width: 100%;
   flex: 1;
@@ -40,20 +42,16 @@ export const Button = styled.TouchableOpacity`
   height: 46px;
   border-radius: 22px;
   width: 46%;
-  margin-bottom: 64px;
+  margin-bottom: 120px;
 `;
-const TextInput = styled.TextInput`
-  background-color: rgba(255, 255, 255, 0.15);
+
+export const Input = styled.TextInput`
   padding: 15px 7px;
   border-radius: 4px;
   background-color: #eef4ff;
   border-radius: 10px;
   width: 100%;
 `;
-
-export const Input = ({ innerRef, lastOne, ...data }) => {
-  return <TextInput ref={innerRef} lastOne={lastOne} placeholderTextColor="#84ADFF" {...data} />;
-};
 
 const SummaryContainer = styled.View`
   width: 100%;
@@ -72,7 +70,35 @@ export const SummaryList = ({ text }) => {
     </SummaryContainer>
   );
 };
-
+// const HeaderContainer = styled.SafeAreaView`
+//   width: 100%;
+//   height: 48px;
+//   border-color: #747474;
+//   elevation: 2;
+//   justify-content: center;
+// `;
+// const PageName = styled.Text`
+//   position: absolute;
+//   left: 20%;
+//   width: 60%;
+//   text-align: center;
+//   font-size: 16px;
+//   font-weight: bold;
+// `;
+// const BackButton = styled.TouchableOpacity`
+//   width: 32px;
+//   height: 32px;
+// `;
+// export const CreateRouteHeader = ({ navigation }) => {
+//   return (
+//     <HeaderContainer>
+//       <BackButton>
+//         <WithLocalSvg width={24} height={24} asset={LeftArrow} />
+//       </BackButton>
+//       <PageName>경로 작성</PageName>
+//     </HeaderContainer>
+//   );
+// };
 export const regions = [
   { name: '강동구', id: 1 },
   { name: '강남구', id: 2 },

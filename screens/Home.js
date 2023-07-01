@@ -50,23 +50,23 @@ const Home = () => {
   // http://3.37.189.80/trip/search/address?address=%EC%98%81%EB%93%B1%ED%8F%AC&page=0&size=10
 
   //여기부터
-//   let url = 'http://3.37.189.80/trip/search/address';
-//   const fetchTripData = async address => {
-//     try {
-//       const queryStr = `?address=${address}&page=0&size=10`;
-//       const response = await axios.get(url + queryStr, { headers: { Authorization: `Bearer ${JWTToken}` } }).then();
-//       const tripData = response.data;
-//       console.log('Successfully fetched trip data:', tripData);
-//     } catch (error) {
-//       console.error('Failed to fetch trip data:', error.response);
-//     }
-//   };
+  let url = 'http://3.37.189.80/trip/search/address';
+  const fetchTripData = async address => {
+    try {
+      const queryStr = `?address=${address}&page=0&size=10`;
+      const response = await axios.get(url + queryStr, { headers: { Authorization: `Bearer ${JWTToken}` } }).then();
+      const tripData = response.data;
+      console.log('Successfully fetched trip data:', tripData);
+    } catch (error) {
+      console.error('Failed to fetch trip data:', error.response);
+    }
+  };
 
-//   //백엔드에서 데이터 가져오는 구문
-//   useEffect(() => {
-//     const exampleAddress = '영등포구';
-//     fetchTripData(exampleAddress);
-//   }, []);
+  //   //백엔드에서 데이터 가져오는 구문
+  //   useEffect(() => {
+  //     const exampleAddress = '영등포구';
+  //     fetchTripData(exampleAddress);
+  //   }, []);
   //여기까지
   return (
     <>
