@@ -15,7 +15,7 @@ const SummaryContainer = styled.View`
   width: 100%;
 `;
 
-export default CreateRoute_4 = ({ route }) => {
+const CreateRoute_4 = ({ route, navigation }) => {
   let [hashtag, setHashtag] = useState('');
   let title = route.params.title;
   let region = route.params.region;
@@ -46,17 +46,11 @@ export default CreateRoute_4 = ({ route }) => {
           onChangeText={text => setHashtag(text)}
         />
       </Container>
-      <Button
-        style={
-          !hashtag && {
-            backgroundColor: '#D9D9D9',
-          }
-        }
-        disabled={hashtag ? false : true}
-        onPress={() => navigateTo5()}
-      >
-        <ButtonText style={hashtag ? { color: 'white' } : { color: '#747474' }}>완료</ButtonText>
+      <Button onPress={() => navigateTo5()}>
+        <ButtonText>{hashtag ? '등록' : '해시태그 없이 등록'}</ButtonText>
       </Button>
     </CreateRouteLayout>
   );
 };
+
+export default CreateRoute_4;

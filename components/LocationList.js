@@ -129,6 +129,7 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
       const response = await Geocoder.from({ latitude, longitude }, { language: 'ko' });
 
       if (response.results.length > 0) {
+        console.log(response.results[0]);
         const address = response.results[0].formatted_address;
         setCoordName(address);
       } else {
@@ -197,7 +198,6 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
       setDescription('');
       setCoord('');
     }
-    console.log(newArr.length);
     setLocations(newArr);
   };
   const renderItem = ({ item, index }) => (
