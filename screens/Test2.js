@@ -1,61 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import * as MediaLibrary from 'expo-media-library';
-import styled from 'styled-components/native';
-import { ButtonText, CreateRouteLayout } from '../components/CreateRoute_Shared';
+import React, { useRef } from 'react';
+import { Text } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { CreateRouteLayout } from '../components/CreateRoute_Shared';
 
-const Container = styled.View`
-  flex: 1;
-  background-color: black;
-`;
-
-const Top = styled.View`
-  flex: 1;
-  background-color: black;
-`;
-
-const Bottom = styled.View`
-  flex: 1;
-  background-color: black;
-`;
-
-const ImageContainer = styled.TouchableOpacity``;
-const IconContainer = styled.View`
-  position: absolute;
-  bottom: 5px;
-  right: 0px;
-`;
-
-const HeaderRightText = styled.Text`
-  color: blue;
-  font-size: 16px;
-  font-weight: 600;
-  margin-right: 7px;
-`;
-
-export default function Test2({ navigation }) {
-  const [ok, setOk] = useState(false);
-  const getPhotos = async () => {
-    if (ok) {
-      const { assets: photos } = await MediaLibrary.getAssetsAsync();
-      console.log(photos);
-    }
-  };
-  const getPermissions = async () => {
-    const { canAskAgain } = await MediaLibrary.getPermissionsAsync();
-    if (canAskAgain) {
-      const permissions = await MediaLibrary.requestPermissionsAsync();
-      if (permissions.granted == true) {
-        setOk(true);
-      }
-    }
-  };
-  useEffect(() => {
-    getPermissions();
-    getPhotos();
-  }, []);
+export default Test2 = () => {
+  const mapRef = useRef(null);
+  const coordinates = [
+    { latitude: 37.78825, longitude: 126.9084 },
+    { latitude: 37.75825, longitude: 126.9092 },
+    { latitude: 37.72825, longitude: 126.907 },
+  ];
   return (
-    <CreateRouteLayout style={{ justifyContent: 'center' }}>
-      <ButtonText style={{ color: 'black' }}>권한이 없습니다</ButtonText>
+    <CreateRouteLayout>
+      <MapView
+        ref={mapRef}
+        style={{ width: '100%', height: '100%' }}
+        initialRegion={{
+          latitude: 37.559,
+          longitude: 126.9084,
+          latitudeDelta: 0.018289,
+          longitudeDelta: 0.010928,
+        }}
+        provider={PROVIDER_GOOGLE}
+      >
+        {coordinates.map((coordinate, index) => (
+          <Marker key={index} coordinate={coordinate}>
+            <MapView.Callout>
+              <Text>{index + 1}</Text>
+            </MapView.Callout>
+          </Marker>
+        ))}
+      </MapView>
     </CreateRouteLayout>
   );
-}
+};
