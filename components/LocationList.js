@@ -39,27 +39,32 @@ const RouteContainer = styled.View`
 `;
 const LocationContainer = styled.View`
   height: 100%;
-  justify-content: space-between;
+  justify-content: flex-start;
 `;
 const LocationTitle = styled.Text`
   font-size: 20px;
   font-weight: 700;
   color: #84adff;
   height: 32px;
+  margin-bottom: 8px;
 `;
 const LocationImage = styled.Image`
   width: 100%;
   height: 240px;
   background-color: #e8e8e8;
   border-radius: 6px;
+  margin-bottom: 2px;
+`;
+const LocationAdress = styled.Text`
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: #a7a7a7;
+  margin-bottom: 8px;
 `;
 const LocationDescription = styled.Text`
-  border-radius: 6px;
-  padding: 1%;
-  height: 100px;
-  font-size: 15px;
-  font-weight: 400;
-  color: #afafaf;
+  font-size: 16px;
+  font-weight: 300;
 `;
 const LocationInput = styled.TextInput`
   border-radius: 6px;
@@ -67,6 +72,7 @@ const LocationInput = styled.TextInput`
   background-color: white;
   width: 100%;
   height: 32px;
+  margin-bottom: 8px;
 `;
 const LocationDescriptionInput = styled.TextInput`
   border-radius: 6px;
@@ -101,21 +107,30 @@ const DetailText = styled.Text`
   color: #0351ea;
 `;
 const StatusText = styled.Text`
-  font-size: 12px;
-  margin-top: -8px;
-  margin-bottom: 4px;
+  font-size: 10px;
+  margin-top: 2px;
+  margin-bottom: 12px;
 `;
-
+const ImageAddButton = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  background-color: white;
+  border-radius: 6px;
+  margin-bottom: 40px;
+`;
 export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
   let [name, setName] = useState('');
   let [description, setDescription] = useState('');
   let [coord, setCoord] = useState(null);
+  let [img, setImg] = useState('');
   const [coordName, setCoordName] = useState('');
   const [locations, setLocations] = useState([
     {
       name: '',
       coord: '',
       coordName: '',
+      image: '',
       description: '',
       saved: false,
     },
@@ -126,7 +141,7 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
   Geocoder.init('AIzaSyAaUkAfVEg4MhR_oH4javLSxywHfOJANBs');
   const getLocationName = async (latitude, longitude) => {
     try {
-      const response = await Geocoder.from({ latitude, longitude }, { language: 'ko' });
+      const response = await Geocoder.from({ latitude, longitude }, { language: 'KR' });
 
       if (response.results.length > 0) {
         console.log(response.results[0]);
@@ -153,6 +168,7 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
     filteredArr.push({
       name: '',
       coord: '',
+      image: '',
       coordName: '',
       description: '',
       saved: false,
@@ -161,39 +177,51 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
     setName('');
     setDescription('');
     setCoord('');
+    setImg('');
   };
 
   const handleSubmit = () => {
     let filteredArr = locations.filter(item => item.saved == true);
     parentFunction(routeName, routeRegion, filteredArr);
   };
-
+  const selectImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+      allowsEditing: true,
+      aspect: [10, 8],
+    });
+    if (!result.canceled) {
+      setImg(result.assets[0].uri);
+    }
+  };
   const handleLongPress = e => {
     setCoord(e.nativeEvent.coordinate);
   };
   const handleMarkerDragEnd = e => {
-    console.log('드래그로 변경된 좌표:', e.nativeEvent.coordinate);
     setCoord(e.nativeEvent.coordinate);
   };
   const updateLocation = () => {
     let newArr = [...locations];
     newArr[locations.length - 1].name = name;
     newArr[locations.length - 1].description = description;
-    newArr[locations.length - 1].saved = true;
     newArr[locations.length - 1].coord = coord;
+    newArr[locations.length - 1].image = img;
     newArr[locations.length - 1].coordName = coordName;
-
+    newArr[locations.length - 1].saved = true;
+    console.log(newArr);
     if (locations.length > 4) {
       Alert.alert('경로 5개를 채웠어요!');
     } else {
       newArr.push({
         name: '',
-        coord: '',
-
         description: '',
+        coord: '',
+        image: '',
+        coordName: '',
         saved: false,
       });
-
+      setImg('');
       setName('');
       setDescription('');
       setCoord('');
@@ -210,8 +238,8 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
               <DeleteButtonText>X</DeleteButtonText>
             </DeleteButton>
           </View>
-          {/* <LocationImage style={{ resizeMode: 'contain' }} source={{ uri: locations[index].image }} /> */}
-          <LocationDescription>{locations[index].coordName}</LocationDescription>
+          <LocationImage style={{ resizeMode: 'contain' }} source={{ uri: locations[index].image }} />
+          <LocationAdress>{locations[index].coordName}</LocationAdress>
           <LocationDescription style={{ color: 'black' }}>{locations[index].description}</LocationDescription>
         </LocationContainer>
       ) : (
@@ -220,7 +248,7 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
             style={{ width: '100%' }}
             autoFocus
             value={name}
-            placeholder="제목 입력"
+            placeholder="장소명을 입력해주세요"
             returnKeyType="next"
             onSubmitEditing={() => {
               Keyboard.dismiss();
@@ -229,39 +257,51 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
             onChangeText={value => setName(value)}
           />
           <ImageContainer>
-            <MapView
-              style={{ width: '100%', height: '100%' }}
-              initialRegion={{
-                latitude: 37.559,
-                longitude: 126.9084,
-                latitudeDelta: 0.018289,
-                longitudeDelta: 0.010928,
-              }}
-              provider={PROVIDER_GOOGLE}
-              onLongPress={handleLongPress}
-            >
-              {coord && <Marker coordinate={coord} draggable onDragEnd={e => handleMarkerDragEnd(e)} />}
-            </MapView>
+            {img ? (
+              <LocationImage style={{ resizeMode: 'contain' }} source={{ uri: img }} />
+            ) : (
+              <MapView
+                style={{ width: '100%', height: '100%' }}
+                initialRegion={{
+                  latitude: 37.559,
+                  longitude: 126.9084,
+                  latitudeDelta: 0.018289,
+                  longitudeDelta: 0.010928,
+                }}
+                provider={PROVIDER_GOOGLE}
+                onLongPress={handleLongPress}
+              >
+                {coord && <Marker coordinate={coord} draggable onDragEnd={e => handleMarkerDragEnd(e)} />}
+              </MapView>
+            )}
           </ImageContainer>
           {coord ? (
             <StatusText style={{ color: '#15A457' }}>{coordName}</StatusText>
           ) : (
             <StatusText style={{ color: '#ef3a3a' }}>길게 눌러 장소 위치를 정해주세요</StatusText>
           )}
-          <LocationDescriptionInput
-            value={description}
-            placeholder="설명"
-            returnKeyType="done"
-            blurOnSubmit={false}
-            onSubmitEditing={() => {
-              Keyboard.dismiss();
-            }}
-            onChangeText={value => setDescription(value)}
-          />
+          {img && (
+            <LocationDescriptionInput
+              value={description}
+              placeholder="설명"
+              returnKeyType="done"
+              blurOnSubmit={false}
+              onSubmitEditing={() => {
+                Keyboard.dismiss();
+              }}
+              onChangeText={value => setDescription(value)}
+            />
+          )}
+          {coord && !img && (
+            <ImageAddButton onPress={() => selectImage(index)}>
+              <WithLocalSvg width={32} height={32} asset={Plus} />
+            </ImageAddButton>
+          )}
+
           <LocationAddButton
-            disabled={name && coord ? false : true}
+            disabled={name && coord && img ? false : true}
             style={
-              name && coord
+              name && coord && img
                 ? {
                     elevation: 2,
                     backgroundColor: 'white',
@@ -275,7 +315,7 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
           >
             <WithLocalSvg
               style={
-                name && coord
+                name && coord && img
                   ? { color: '#0351EA' }
                   : {
                       color: '#AAAAAA',

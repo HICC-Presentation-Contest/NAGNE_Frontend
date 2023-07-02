@@ -4,6 +4,7 @@ import CreateNoteNav from './CreateRouteNav';
 import Home from '../screens/Home';
 import Test from '../screens/Test';
 import TabIcon from '../components/nav/TabIcon';
+import Test2 from '../screens/Test2';
 
 const Tabs = createBottomTabNavigator();
 
@@ -29,7 +30,7 @@ export default function LoggedInNav() {
           ),
         }}
       />
-      <Tabs.Screen name="Test" component={Test} />
+      <Tabs.Screen name="Test2" component={Test2} />
       <Tabs.Screen
         name="CreateRoute"
         options={{

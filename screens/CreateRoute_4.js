@@ -20,7 +20,7 @@ const CreateRoute_4 = ({ route, navigation }) => {
   let title = route.params.title;
   let region = route.params.region;
   let locations = route.params.locations;
-
+  console.log(locations);
   const navigateTo5 = () => {
     navigation.navigate('CreateRoute_5', {
       title,
