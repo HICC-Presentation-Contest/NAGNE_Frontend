@@ -1,13 +1,18 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import CreateNoteNav from './CreateRouteNav';
+import MyNav from './MyNav';
 import Home from '../screens/Home';
 import TabIcon from '../components/nav/TabIcon';
 import Test from '../screens/Test';
+import Storage from '../screens/Storage';
+import MyPage from '../screens/MyPage';
 
 const Tabs = createBottomTabNavigator();
 
-export default function LoggedInNav() {
+export default function LoggedInNav({ navigation }) {
+  const goToMyPage = () => navigation.navigate('MyPage', { userId: '2' });
+
   return (
     <Tabs.Navigator
       screenOptions={{
@@ -39,6 +44,25 @@ export default function LoggedInNav() {
         }}
       >
         {() => <CreateNoteNav />}
+      </Tabs.Screen>
+      <Tabs.Screen
+        name="Storage"
+        options={{
+          tabBarIcon: ({ focused, color, size }) => (
+            <Ionicons name={'folder-outline'} color={color} size={focused ? 22 : 18} />
+          ),
+        }}
+        component={Storage}
+      />
+      <Tabs.Screen
+        name="MyNav"
+        options={{
+          tabBarIcon: ({ focused, color, size }) => (
+            <Ionicons name={'person-outline'} color={color} size={focused ? 22 : 18} />
+          ),
+        }}
+      >
+        {() => <MyNav />}
       </Tabs.Screen>
     </Tabs.Navigator>
   );
