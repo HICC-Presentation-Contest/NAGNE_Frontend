@@ -1,0 +1,67 @@
+{
+    "content": [
+      {
+        "tripId": 0,
+        "address": "address",
+        "title": "title",
+        "createdDate": "2023-06-27T09:42:38.432Z",
+        "locationInfoList": ["파파존스", "메가박스", "봉은사", "마라차이즈", "집"]
+      },
+      {
+        "tripId": 1,
+        "address": "address1",
+        "title": "title1",
+        "createdDate": "2023-06-27T09:42:38.432Z_1",
+        "locationInfoList": [
+          "파파존스1",
+          "메가박스1",
+          "봉은사1",
+          "마라차이즈1",
+          "집1"
+        ]
+      },
+      {
+        "tripId": 2,
+        "address": "address2",
+        "title": "title2",
+        "createdDate": "2023-06-27T09:42:38.432Z_2",
+        "locationInfoList": [
+          "파파존스2",
+          "메가박스2",
+          "봉은사2",
+          "마라차이즈2",
+          "집2"
+        ]
+      },
+      {
+        "tripId": 3,
+        "address": "address3",
+        "title": "title3",
+        "createdDate": "2023-06-27T09:42:38.432Z_3",
+        "locationInfoList": [
+          "파파존스3",
+          "메가박스3",
+          "봉은사3",
+          "마라차이즈3",
+          "집3"
+        ]
+      },
+      {
+        "tripId": 4,
+        "address": "address4",
+        "title": "title4",
+        "createdDate": "2023-06-27T09:42:38.432Z_4",
+        "locationInfoList": [
+          "파파존스4",
+          "메가박스4",
+          "봉은사4",
+          "마라차이즈4",
+          "집4"
+        ]
+      }
+    ],
+    "page": 0,
+    "size": 0,
+    "hasNext": true
+  }
+  
