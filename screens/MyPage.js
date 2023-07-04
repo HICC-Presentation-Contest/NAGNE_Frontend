@@ -166,6 +166,7 @@ const Map = styled.View`
 export default function MyPage({ navigation, route }) {
   const [activeTab, setActiveTab] = useState('Path');
   const [simplePost, setSimplePost] = useState(dummy.content);
+  const [post, setPost] = useState();
   const [userInfo, setUserInfo] = useState(dUserInfo);
   const [bio, setBio] = useState(userInfo.description);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -196,7 +197,7 @@ export default function MyPage({ navigation, route }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://3.37.189.80/trip/user/${userId}?page=0&size=10`, {
+        const response = await axios.get(`http://3.37.189.80/trip/user/${userId}/simple?page=0&size=10`, {
           headers: { Authorization: `Bearer ${JWTToken}` },
         });
         console.log(response.data); // Server response data
@@ -207,7 +208,25 @@ export default function MyPage({ navigation, route }) {
         console.error(error); // Error handling
       }
     };
+    fetchData();
+  }, [userId]);
 
+  //여행 정보 조회
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://3.37.189.80/trip/user/${userId}?page=0&size=10`, {
+          headers: { Authorization: `Bearer ${JWTToken}` },
+        });
+        console.log('성공'); // Server response data
+        console.log(response.data); // Server response data
+
+        setPost(response.data.content);
+        // Perform necessary actions with the response data
+      } catch (error) {
+        console.error(error); // Error handling
+      }
+    };
     fetchData();
   }, [userId]);
 
@@ -275,6 +294,14 @@ export default function MyPage({ navigation, route }) {
     );
   };
 
+  const renderItem2 = ({ item: post }) => {
+    return (
+      <Map key={post.tripId}>
+        <Image source={{ uri: post.tripImageUrl }} />
+      </Map>
+    );
+  };
+
   return (
     <Container>
       <UserInfo>
@@ -330,15 +357,7 @@ export default function MyPage({ navigation, route }) {
       {activeTab === 'Saved' && (
         <TabContent>
           <MapContainer>
-            <Map>
-              <Maps />
-            </Map>
-            <Map>
-              <Maps />
-            </Map>
-            <Map>
-              <Maps />
-            </Map>
+            <FlatList data={post} keyExtractor={item => item.tripId} renderItem={renderItem2} />
           </MapContainer>
         </TabContent>
       )}
