@@ -5,7 +5,7 @@ import Follower from '../screens/Follower';
 import Following from '../screens/Following';
 import userInfo from '../dummy/userInfo.json';
 import { Image } from 'react-native';
-import LoggedInNav from './LoggedInNav';
+
 import Welcome from '../screens/Welcome';
 
 const Stack = createStackNavigator();
@@ -53,7 +53,6 @@ export default function MyNav() {
         }}
         component={Following}
       />
-      <Stack.Screen name="LoggedInNav" component={LoggedInNav} />
     </Stack.Navigator>
   );
 }

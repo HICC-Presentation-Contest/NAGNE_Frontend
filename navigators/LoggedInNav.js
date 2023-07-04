@@ -10,9 +10,7 @@ import MyPage from '../screens/MyPage';
 
 const Tabs = createBottomTabNavigator();
 
-export default function LoggedInNav({ navigation }) {
-  const goToMyPage = () => navigation.navigate('MyPage', { userId: '2' });
-
+export default function LoggedInNav() {
   return (
     <Tabs.Navigator
       screenOptions={{
