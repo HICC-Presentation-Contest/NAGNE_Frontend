@@ -6,8 +6,6 @@ import Following from '../screens/Following';
 import userInfo from '../dummy/userInfo.json';
 import { Image } from 'react-native';
 
-import Welcome from '../screens/Welcome';
-
 const Stack = createStackNavigator();
 
 export default function MyNav() {
@@ -20,7 +18,6 @@ export default function MyNav() {
         },
       }}
     >
-      <Stack.Screen name="Welcome" options={{ headerShown: false }} component={Welcome} />
       <Stack.Screen
         name="MyPage"
         options={{
@@ -38,6 +35,7 @@ export default function MyNav() {
           ),
         }}
         component={MyPage}
+        initialParams={{ userId: '3' }}
       />
       <Stack.Screen
         name="Follower"

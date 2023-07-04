@@ -159,7 +159,7 @@ const Map = styled.View`
   height: 176px;
   margin-left: 10px;
   margin-bottom: 16px;
-  border: 1px;
+
   border-radius: 5px;
 `;
 
@@ -297,7 +297,12 @@ export default function MyPage({ navigation, route }) {
   const renderItem2 = ({ item: post }) => {
     return (
       <Map key={post.tripId}>
-        <Image source={{ uri: post.tripImageUrl }} />
+        <Image
+          style={{ width: 168, height: 174, borderRadius: 5 }}
+          source={{
+            uri: post.tripImageUrl,
+          }}
+        />
       </Map>
     );
   };
@@ -356,9 +361,19 @@ export default function MyPage({ navigation, route }) {
       )}
       {activeTab === 'Saved' && (
         <TabContent>
-          <MapContainer>
-            <FlatList data={post} keyExtractor={item => item.tripId} renderItem={renderItem2} />
-          </MapContainer>
+          <FlatList
+            data={post}
+            numColumns={2}
+            keyExtractor={item => item.tripId}
+            renderItem={renderItem2}
+            contentContainerStyle={{
+              width: '100%',
+              marginLeft: 7,
+            }}
+            columnWrapperStyle={{
+              justifyContent: 'flex-start',
+            }}
+          />
         </TabContent>
       )}
     </Container>
