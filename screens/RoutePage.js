@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import RoutePageHeader from '../components/RoutePageHeader';
 import { WithLocalSvg } from 'react-native-svg';
 import PathList from '../components/PathList';
+import Bookmark from '../assets/images/bookmark_Active.svg';
 
 let diagramRadius = 40;
 const ScreenLayout = styled.SafeAreaView`
@@ -36,17 +37,21 @@ const TitleContainer = styled.View`
   justify-content: space-between;
   flex-direction: row;
   align-items: center;
+  padding: 0px 24px;
 `;
 const TitleText = styled.Text`
   font-size: 16px;
   font-weight: 700;
   color: #0351ea;
-  margin-left: 24px;
 `;
-const BookmarkContainer = styled.View``;
+const BookmarkContainer = styled.TouchableOpacity`
+  flex-direction: row;
+`;
 const BookmarkText = styled.Text`
   font-size: 16px;
+  color: #0351ea;
   font-weight: 500;
+  margin-right: 8px;
 `;
 const SequenceDiagram = styled.View`
   width: ${diagramRadius}px;
@@ -90,17 +95,43 @@ const HorizontalLine = styled.View`
   position: absolute;
   border: #0351ea 1px solid;
 `;
-const RoutePage = ({ route }) => {
+const RoutePage = ({ route, navigation }) => {
   let [data, setData] = useState('');
   let [follow, setFollow] = useState(false);
+  let [bookmarked, setBookmarked] = useState(false);
+  let [bookmarkCount, setBookmarkCount] = useState('');
+  let JWTToken =
+    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODg0NjAwMzMsImV4cCI6MTY4OTA2NDgzMywic3ViIjoibmVvc2VsZjExMDVAZ21haWwuY29tIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.EUnyvx1Sk0MPgoOvihGjL_2U-srcR4wLQzOXGh2PMBaslrguB-uh7VQlBWoygUOXhYaVCqKr60yEuQjpglxmbg';
+
+  const handleBookmarkPressed = async tripId => {
+    setBookmarked(bookmarked => !bookmarked);
+    const routeData = new FormData();
+    routeData.append('tripId', tripId);
+    await axios
+      .post(`http://3.37.189.80/bookmark?tripId=${tripId}`, routeData, {
+        headers: { Authorization: `Bearer ${JWTToken}`, 'Content-Type': 'multipart/form-data' },
+      })
+      .then(result => console.log(result));
+  };
+  const fetchBookmarkCount = async tripId => {
+    let url = `http://3.37.189.80/bookmark/count`;
+    const queryStr = `?tripId=${tripId}`;
+    await axios
+      .get(url + queryStr, { headers: { Authorization: `Bearer ${JWTToken}` } })
+      .then(result => setBookmarkCount(result.data.bookMarkCount));
+  };
+  const fetchBookmarked = async tripId => {
+    let url = `http://3.37.189.80/bookmark/check`;
+    const queryStr = `?tripId=${tripId}`;
+    await axios
+      .get(url + queryStr, { headers: { Authorization: `Bearer ${JWTToken}` } })
+      .then(result => setBookmarked(result.data.bookMark));
+  };
   const fetchTripInfo = async tripId => {
     try {
-      let JWTToken =
-        'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODg0NjAwMzMsImV4cCI6MTY4OTA2NDgzMywic3ViIjoibmVvc2VsZjExMDVAZ21haWwuY29tIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.EUnyvx1Sk0MPgoOvihGjL_2U-srcR4wLQzOXGh2PMBaslrguB-uh7VQlBWoygUOXhYaVCqKr60yEuQjpglxmbg';
       let url = `http://3.37.189.80/trip/${tripId}`;
       const response = await axios.get(url, { headers: { Authorization: `Bearer ${JWTToken}` } });
       const tripData = response.data;
-      console.log(tripData);
       return tripData;
     } catch (error) {
       console.error('Failed to fetch trip data:', error.response);
@@ -111,17 +142,18 @@ const RoutePage = ({ route }) => {
   };
   useEffect(() => {
     let tripId = route.params.tripId;
-
-    fetchTripInfo(tripId)
-      .then(data => setData(data))
-      .then(console.log(data));
+    fetchBookmarkCount(tripId);
+    fetchBookmarked(tripId);
+    fetchTripInfo(tripId).then(data => setData(data));
   }, []);
   //console.log(data.locationInfo.map(item => console.log(item.place)));
-
+  const goBack = () => {
+    navigation.goBack();
+  };
   return (
     <>
       <ScreenLayout>
-        <RoutePageHeader userId={data.username} followed={follow} onPress={toggleFollow} />
+        <RoutePageHeader onPressBack={goBack} userId={data.username} followed={follow} onPress={toggleFollow} />
         <LocationText>서울시 {data.address}</LocationText>
         <PlaceListContainer>
           <HorizontalLine />
@@ -140,8 +172,9 @@ const RoutePage = ({ route }) => {
         </LocationListContainer>
         <TitleContainer>
           <TitleText>{data.title}</TitleText>
-          <BookmarkContainer>
-            <BookmarkText></BookmarkText>
+          <BookmarkContainer onPress={() => handleBookmarkPressed(route.params.tripId)}>
+            <BookmarkText>{bookmarkCount}</BookmarkText>
+            <WithLocalSvg style={bookmarked && { color: '#0351ea' }} width={26} height={26} asset={Bookmark} />
           </BookmarkContainer>
         </TitleContainer>
       </ScreenLayout>

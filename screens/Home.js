@@ -131,7 +131,7 @@ const Home = ({ navigation }) => {
       let location = await Location.getCurrentPositionAsync({});
       const latitude = location.coords.latitude;
       const longitude = location.coords.longitude;
-      console.log(longitude, latitude);
+      console.log('현재 사용자 위치:', longitude, latitude);
       const pageable = { page: 0, size: 20 };
 
       fetchMyLocationData(longitude, latitude, pageable).then(data => setMyLocationData(data));
@@ -142,29 +142,23 @@ const Home = ({ navigation }) => {
     })();
   }, []);
   return (
-    <>
-      <Image
-        source={Frame}
-        style={{ width: ScreenWidth, height: ScreenHeight, position: 'absolute', marginTop: 0, opacity: 0.3 }}
-      />
-      <ScreenLayout>
-        <Header />
-        <UpperBase>
-          <CardTypeContainer>
-            <ToogleBase onPress={() => setMode(0)} selected={mode == 0} icon={true} text="내 위치" />
-            <Line />
-            <ToogleBase onPress={() => setMode(1)} selected={mode == 1} icon={false} text="인기" />
-          </CardTypeContainer>
-          <ThumbnailsContainer>
-            <MapThumbnails parentFunction={navigateToRoutePage} data={mode == 0 ? myLocationData : popularData} />
-          </ThumbnailsContainer>
-        </UpperBase>
-        <LocationContainer>
-          <WithLocalSvg style={{ color: '#0351ea' }} width={22} height={22} asset={LocationIcon} />
-          <LocationText>{location}</LocationText>
-        </LocationContainer>
-      </ScreenLayout>
-    </>
+    <ScreenLayout>
+      <Header />
+      <UpperBase>
+        <CardTypeContainer>
+          <ToogleBase onPress={() => setMode(0)} selected={mode == 0} icon={true} text="내 위치" />
+          <Line />
+          <ToogleBase onPress={() => setMode(1)} selected={mode == 1} icon={false} text="인기" />
+        </CardTypeContainer>
+        <ThumbnailsContainer>
+          <MapThumbnails parentFunction={navigateToRoutePage} data={mode == 0 ? myLocationData : popularData} />
+        </ThumbnailsContainer>
+      </UpperBase>
+      <LocationContainer>
+        <WithLocalSvg style={{ color: '#0351ea' }} width={22} height={22} asset={LocationIcon} />
+        <LocationText>{location}</LocationText>
+      </LocationContainer>
+    </ScreenLayout>
   );
 };
 

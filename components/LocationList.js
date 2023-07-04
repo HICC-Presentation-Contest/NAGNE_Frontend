@@ -145,7 +145,7 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${API_KEY}&language=ko`,
       );
       if (response.data.results.length > 0) {
-        console.log(response.data.results[0]);
+        // console.log(response.data.results[0]);
         const address = response.data.results[0].formatted_address;
         setCoordName(address);
       } else {
@@ -210,7 +210,7 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
     newArr[locations.length - 1].image = img;
     newArr[locations.length - 1].coordName = coordName;
     newArr[locations.length - 1].saved = true;
-    console.log(newArr);
+    // console.log(newArr);
     if (locations.length > 4) {
       Alert.alert('경로 5개를 채웠어요!');
     } else {

@@ -45,13 +45,16 @@ const UserText = styled.Text`
   text-align: center;
   left: 25%;
 `;
-const RoutePageHeader = ({ userId, followed, onPress }) => {
+const RoutePageHeader = ({ userId, followed, onPress, onPressBack }) => {
   const handleClick = () => {
     onPress();
   };
+  const handleBack = () => {
+    onPressBack();
+  };
   return (
     <Container>
-      <BackButton>
+      <BackButton onPress={handleBack}>
         <Image style={{ width: 28, height: 28 }} source={leftArrow}></Image>
       </BackButton>
       <FollowButton style={followed && { backgroundColor: '#0351EA' }} onPress={handleClick}>

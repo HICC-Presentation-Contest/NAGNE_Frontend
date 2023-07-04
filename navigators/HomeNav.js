@@ -13,13 +13,7 @@ export default function HomeNav() {
       }}
     >
       <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen
-        name="RoutePage"
-        // options={{
-        //   title: '팔로워',
-        // }}
-        component={RoutePage}
-      />
+      <Stack.Screen name="RoutePage" component={RoutePage} />
     </Stack.Navigator>
   );
 }
