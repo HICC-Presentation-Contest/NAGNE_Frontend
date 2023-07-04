@@ -11,7 +11,6 @@ const Container = styled.SafeAreaView`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 3%;
   height: 80px;
 `;
 
@@ -24,11 +23,11 @@ const BackButton = styled.TouchableOpacity`
 const FollowButton = styled.TouchableOpacity`
   height: 50%;
   width: 72px;
-  height: 40px;
+  height: 36px;
   border: #747474;
   color: black;
-  margin-right: 12px;
-  border-radius: 20px;
+  margin-right: 8px;
+  border-radius: 18px;
   justify-content: center;
   align-items: center;
 `;
@@ -42,18 +41,21 @@ const UserText = styled.Text`
   position: absolute;
   font-size: 18px;
   font-weight: bold;
+  width: 50%;
   text-align: center;
-  left: 0;
-  right: 0;
+  left: 25%;
 `;
 const RoutePageHeader = ({ userId, followed, onPress }) => {
+  const handleClick = () => {
+    onPress();
+  };
   return (
     <Container>
       <BackButton>
         <Image style={{ width: 28, height: 28 }} source={leftArrow}></Image>
       </BackButton>
-      <FollowButton onPress={onPress}>
-        <FollowText>{followed ? '팔로우' : '언팔로우'}</FollowText>
+      <FollowButton style={followed && { backgroundColor: '#0351EA' }} onPress={handleClick}>
+        <FollowText style={followed && { color: 'white' }}>{followed ? '언팔로우' : '팔로우'}</FollowText>
       </FollowButton>
       <UserText>{userId}</UserText>
     </Container>

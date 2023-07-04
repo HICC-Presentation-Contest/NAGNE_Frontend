@@ -328,7 +328,6 @@ export default function MyPage({ navigation, route }) {
       try {
         const routeData = new FormData();
         routeData.append('tripId', myTripId);
-
         // 백엔드에 북마크 상태 전송
         const response = await axios.post(`http://3.37.189.80/bookmark?tripId=${myTripId}`, routeData, {
           headers: { Authorization: `Bearer ${JWTToken}`, 'Content-Type': 'multipart/form-data' },
