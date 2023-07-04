@@ -4,7 +4,6 @@ import CreateNoteNav from './CreateRouteNav';
 import MyNav from './MyNav';
 import Home from '../screens/Home';
 import TabIcon from '../components/nav/TabIcon';
-import Test from '../screens/Test';
 import Storage from '../screens/Storage';
 import MyPage from '../screens/MyPage';
 
@@ -32,7 +31,6 @@ export default function LoggedInNav() {
           ),
         }}
       />
-      <Tabs.Screen name="Test2" component={Test} />
       <Tabs.Screen
         name="CreateRoute"
         options={{

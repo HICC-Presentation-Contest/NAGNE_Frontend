@@ -7,11 +7,14 @@ import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 import { View, Text } from 'react-native';
 
-const ImageContainer = styled.View`
-  width: 70%;
-  height: 480px;
-  border-radius: 16px;
+const MapContainer = styled.View`
+  margin-top: 40px;
+  elevation: 9;
+  box-shadow: 24px 16px 16px black;
+  width: 300px;
+  height: 400px;
 `;
+
 const CreateRoute_5 = ({ route }) => {
   const [mapSnapshot, setMapSnapshot] = useState(null);
   let url = 'http://3.37.189.80/trip';
@@ -104,7 +107,7 @@ const CreateRoute_5 = ({ route }) => {
 
   return (
     <CreateRouteLayout>
-      <ImageContainer>
+      <MapContainer>
         <MapView
           ref={mapRef}
           style={{ width: '100%', height: '100%' }}
@@ -135,9 +138,9 @@ const CreateRoute_5 = ({ route }) => {
           ))}
           <Polyline coordinates={coordinates} strokeWidth={2} strokeColor="#0351ea" />
         </MapView>
-      </ImageContainer>
-      <Button>
-        <ButtonText>돌아가기</ButtonText>
+      </MapContainer>
+      <Button style={{ marginBottom: 80 }}>
+        <ButtonText>홈화면으로 돌아가기</ButtonText>
       </Button>
     </CreateRouteLayout>
   );
