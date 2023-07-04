@@ -193,7 +193,7 @@ export default function MyPage({ navigation, route }) {
   };
 
   let JWTToken =
-    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODg0NTc2NDEsImV4cCI6MTY4OTA2MjQ0MSwic3ViIjoic2Vobzc4QGcuaG9uZ2lrLmFjLmtyIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.XRGs2XPdCrHpPgkcd96O46r2l8KRYpkZQu8PRfZoDtxYPV3N4-l5QB7IL77BfJMS-9Y7HyZssjPoxDYXAZVrrA';
+    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODg0Njk5NjgsImV4cCI6MTY4OTA3NDc2OCwic3ViIjoibmVvc2VsZjExMDVAZ21haWwuY29tIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.fCy2AshXoBGlSiBDQ729RdmcSDlOC_ZV_aTNMs1RlNBswR18mint1GzT4eEvlOVbseDPIu6RwUkIO2iYKtNu3A';
 
   //여행 간단 정보 조회
   useEffect(() => {
@@ -323,14 +323,18 @@ export default function MyPage({ navigation, route }) {
     // 현재 포스트의 북마크 상태를 가져옵니다.
     const isBookmarked = bookmarkedPosts[post.tripId];
 
-    const handleBookmarkPress = async () => {
+    const handleBookmarkPress = async myTripId => {
       //현재 백이랑 통신이 안되는 상태 추후 수정 예정
       try {
+        const routeData = new FormData();
+        routeData.append('tripId', myTripId);
+
         // 백엔드에 북마크 상태 전송
-        const response = await axios.post(`http://3.37.189.80/bookmark?tripId=${post.tripId}`, {
-          headers: { Authorization: `Bearer ${JWTToken}` },
+        const response = await axios.post(`http://3.37.189.80/bookmark?tripId=${myTripId}`, routeData, {
+          headers: { Authorization: `Bearer ${JWTToken}`, 'Content-Type': 'multipart/form-data' },
         });
 
+        console.log(myTripId);
         // 응답이 정상적인 경우, 프론트엔드의 상태 업데이트
         if (response.status === 200) {
           setBookmarkedPosts(bookmarkedPosts => ({
@@ -355,7 +359,10 @@ export default function MyPage({ navigation, route }) {
           }}
         />
         {/* 북마크 아이콘 추가 */}
-        <TouchableOpacity onPress={handleBookmarkPress} style={{ position: 'absolute', top: 10, right: 10 }}>
+        <TouchableOpacity
+          onPress={() => handleBookmarkPress(post.tripId)}
+          style={{ position: 'absolute', top: 10, right: 10 }}
+        >
           <Image style={{ width: 24, height: 24 }} source={isBookmarked ? bookmarkedIcon : nonBookmarkedIcon} />
         </TouchableOpacity>
       </Map>
