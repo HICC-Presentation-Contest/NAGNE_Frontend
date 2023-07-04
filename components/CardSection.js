@@ -37,7 +37,6 @@ const Route = styled.Text`
 `;
 
 export default MapThumbnails = props => {
-  console.log(props.data[0].locationInfoList);
   const renderItem = ({ item, index }) => (
     <CardContainer>
       <Thumbnail style={{ resizeMode: 'contain' }} source={{ uri: item.tripImageUrl }} />
