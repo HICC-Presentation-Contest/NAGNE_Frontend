@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import axios from 'axios';
 import dummy from '../dummy/travelSimpleInfo.json';
 import dUserInfo from '../dummy/userInfo.json';
-import Maps from '../components/Maps';
+import bookmarkedIcon from '../assets/bookmarked.png';
+import nonBookmarkedIcon from '../assets/non-bookmarked.png';
 
 const Container = styled.View`
   flex: 1;
@@ -170,6 +171,7 @@ export default function MyPage({ navigation, route }) {
   const [userInfo, setUserInfo] = useState(dUserInfo);
   const [bio, setBio] = useState(userInfo.description);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [bookmarkedPosts, setBookmarkedPosts] = useState({});
   const userId = route.params.userId;
 
   useEffect(() => {
@@ -191,7 +193,7 @@ export default function MyPage({ navigation, route }) {
   };
 
   let JWTToken =
-    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODgyNzM4NTEsImV4cCI6MTY4ODg3ODY1MSwic3ViIjoic2Vobzc4QGcuaG9uZ2lrLmFjLmtyIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.zAI5H-a0GejTLlWRznR3_jrQ1Q0zVuXWQlBlwTBwOcNFA6BmqfK6-qx67F4cfzCTL395uYg2zQrUxjE3zCyl4Q';
+    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODg0NTc2NDEsImV4cCI6MTY4OTA2MjQ0MSwic3ViIjoic2Vobzc4QGcuaG9uZ2lrLmFjLmtyIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.XRGs2XPdCrHpPgkcd96O46r2l8KRYpkZQu8PRfZoDtxYPV3N4-l5QB7IL77BfJMS-9Y7HyZssjPoxDYXAZVrrA';
 
   //여행 간단 정보 조회
   useEffect(() => {
@@ -210,6 +212,29 @@ export default function MyPage({ navigation, route }) {
     };
     fetchData();
   }, [userId]);
+
+  //   // 북마크 test 용
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //       try {
+  //         const response = await axios.post(
+  //           `http://3.37.189.80/bookmark?tripId=74
+  //         `,
+  //           {
+  //             headers: { Authorization: `Bearer ${JWTToken}` },
+  //           },
+  //         );
+  //         console.log(response.data); // Server response data
+  //         console.log('77성공'); // Server response data
+
+  //         // Perform necessary actions with the response data
+  //       } catch (error) {
+  //         console.error(error); // Error handling
+  //         console.error('77실패'); // Error handling
+  //       }
+  //     };
+  //     fetchData();
+  //   }, [userId]);
 
   //여행 정보 조회
   useEffect(() => {
@@ -295,6 +320,32 @@ export default function MyPage({ navigation, route }) {
   };
 
   const renderItem2 = ({ item: post }) => {
+    // 현재 포스트의 북마크 상태를 가져옵니다.
+    const isBookmarked = bookmarkedPosts[post.tripId];
+
+    const handleBookmarkPress = async () => {
+      //현재 백이랑 통신이 안되는 상태 추후 수정 예정
+      try {
+        // 백엔드에 북마크 상태 전송
+        const response = await axios.post(`http://3.37.189.80/bookmark?tripId=${post.tripId}`, {
+          headers: { Authorization: `Bearer ${JWTToken}` },
+        });
+
+        // 응답이 정상적인 경우, 프론트엔드의 상태 업데이트
+        if (response.status === 200) {
+          setBookmarkedPosts(bookmarkedPosts => ({
+            ...bookmarkedPosts,
+            [post.tripId]: !bookmarkedPosts[post.tripId],
+          }));
+        } else {
+          throw new Error('Failed to update bookmark');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('북마크 업데이트에 실패했습니다. 다시 시도해 주세요.');
+      }
+    };
+
     return (
       <Map key={post.tripId}>
         <Image
@@ -303,6 +354,10 @@ export default function MyPage({ navigation, route }) {
             uri: post.tripImageUrl,
           }}
         />
+        {/* 북마크 아이콘 추가 */}
+        <TouchableOpacity onPress={handleBookmarkPress} style={{ position: 'absolute', top: 10, right: 10 }}>
+          <Image style={{ width: 24, height: 24 }} source={isBookmarked ? bookmarkedIcon : nonBookmarkedIcon} />
+        </TouchableOpacity>
       </Map>
     );
   };
