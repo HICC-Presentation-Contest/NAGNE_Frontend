@@ -52,7 +52,7 @@ export default function Storage() {
       }
     };
     fetchData();
-  });
+  }, []);
 
   const renderItem = ({ item: post }) => {
     return (
