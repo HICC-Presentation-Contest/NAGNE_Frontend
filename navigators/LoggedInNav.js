@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import CreateNoteNav from './CreateRouteNav';
 import MyNav from './MyNav';
+import HomeNav from './HomeNav';
 import Home from '../screens/Home';
 import TabIcon from '../components/nav/TabIcon';
 import Storage from '../screens/Storage';
@@ -24,17 +25,18 @@ export default function LoggedInNav() {
       }}
     >
       <Tabs.Screen
-        name="Home"
-        component={Home}
+        name="HomeNav"
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon iconName={'home-outline'} color={color} focused={focused} />
           ),
         }}
-      />
+      >
+        {() => <HomeNav />}
+      </Tabs.Screen>
       <Tabs.Screen
-        name="Test"
-        component={Test}
+        name="Home"
+        component={Home}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon iconName={'home-outline'} color={color} focused={focused} />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Frame from '../assets/FIRST_1.png';
 import { Image } from 'react-native';
-import MapThumbnails from '../components/CardSection';
+import MapThumbnails from '../components/MapThumbnails';
 import axios from 'axios';
 import Header from '../components/Header';
 import { styled } from 'styled-components/native';
@@ -60,7 +60,7 @@ const LocationText = styled.Text`
   width: 100%;
   color: #0351ea;
 `;
-const Home = () => {
+const Home = ({ navigation }) => {
   let [myLocationData, setMyLocationData] = useState(null);
   let [popularData, setPopularData] = useState(null);
   let [mode, setMode] = useState(0);
@@ -118,6 +118,9 @@ const Home = () => {
 
     return null;
   }
+  const navigateToRoutePage = tripId => {
+    navigation.navigate('RoutePage', { tripId });
+  };
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -153,7 +156,7 @@ const Home = () => {
             <ToogleBase onPress={() => setMode(1)} selected={mode == 1} icon={false} text="인기" />
           </CardTypeContainer>
           <ThumbnailsContainer>
-            <MapThumbnails data={mode == 0 ? myLocationData : popularData} />
+            <MapThumbnails parentFunction={navigateToRoutePage} data={mode == 0 ? myLocationData : popularData} />
           </ThumbnailsContainer>
         </UpperBase>
         <LocationContainer>

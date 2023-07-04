@@ -1,7 +1,5 @@
 import { styled } from 'styled-components/native';
-import { StyleSheet, TouchableOpacity, TouchableOpacityBase } from 'react-native';
-import { WithLocalSvg } from 'react-native-svg';
-import LeftArrow from '../assets/images/left_arrow.svg';
+import { StyleSheet } from 'react-native';
 
 export const CreateRouteLayout = styled.SafeAreaView`
   flex-direction: column;

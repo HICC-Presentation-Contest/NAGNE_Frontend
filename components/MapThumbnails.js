@@ -36,9 +36,12 @@ const Route = styled.Text`
   font-size: 13px;
 `;
 
-export default MapThumbnails = props => {
+export default MapThumbnails = ({ ...props }) => {
+  const handleCardPress = tripId => {
+    props.parentFunction(tripId);
+  };
   const renderItem = ({ item, index }) => (
-    <CardContainer>
+    <CardContainer onPress={() => handleCardPress(item.tripId)}>
       <Thumbnail style={{ resizeMode: 'contain' }} source={{ uri: item.tripImageUrl }} />
       <TextContainer>
         <Title>{item.title}</Title>
