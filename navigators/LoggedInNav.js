@@ -6,6 +6,7 @@ import Home from '../screens/Home';
 import TabIcon from '../components/nav/TabIcon';
 import Storage from '../screens/Storage';
 import MyPage from '../screens/MyPage';
+import Test from '../screens/Test';
 
 const Tabs = createBottomTabNavigator();
 
@@ -25,6 +26,15 @@ export default function LoggedInNav() {
       <Tabs.Screen
         name="Home"
         component={Home}
+        options={{
+          tabBarIcon: ({ focused, color, size }) => (
+            <TabIcon iconName={'home-outline'} color={color} focused={focused} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Test"
+        component={Test}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon iconName={'home-outline'} color={color} focused={focused} />

@@ -8,7 +8,8 @@ import { ScreenWidth } from './Shared';
 import { Button, ButtonText, Title } from './CreateRoute_Shared';
 import Check from '../assets/images/check.svg';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import Geocoder from 'react-native-geocoding';
+import { API_KEY } from '../PrivateConfig';
+import axios from 'axios';
 
 const DeleteButton = styled.TouchableOpacity`
   background-color: grey;
@@ -138,14 +139,14 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
 
   const flatList = useRef(null);
 
-  Geocoder.init('AIzaSyAaUkAfVEg4MhR_oH4javLSxywHfOJANBs');
   const getLocationName = async (latitude, longitude) => {
     try {
-      const response = await Geocoder.from({ latitude, longitude }, { language: 'KR' });
-
-      if (response.results.length > 0) {
-        console.log(response.results[0]);
-        const address = response.results[0].formatted_address;
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${API_KEY}&language=ko`,
+      );
+      if (response.data.results.length > 0) {
+        console.log(response.data.results[0]);
+        const address = response.data.results[0].formatted_address;
         setCoordName(address);
       } else {
         setCoordName('위치명을 찾을 수 없습니다.');
