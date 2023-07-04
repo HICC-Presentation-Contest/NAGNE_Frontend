@@ -6,7 +6,7 @@ let CardMargin = (ScreenWidth - CardWidth) / 2;
 const CardList = styled.FlatList``;
 let TextContainerHeight = 88;
 
-const CardContainer = styled.View`
+const CardContainer = styled.TouchableOpacity`
   width: ${CardWidth}px;
   margin-left: ${CardMargin}px;
   height: ${CardWidth * 1.333 + TextContainerHeight}px;
