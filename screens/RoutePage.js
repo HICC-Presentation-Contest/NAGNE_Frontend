@@ -5,8 +5,8 @@ import axios from 'axios';
 import leftArrow from '../assets/images/left_arrow.png';
 import Header from '../components/Header';
 import RoutePageHeader from '../components/RoutePageHeader';
-import { FlatList } from 'react-native-gesture-handler';
 import { WithLocalSvg } from 'react-native-svg';
+import PathList from '../components/PathList';
 
 let diagramRadius = 40;
 const ScreenLayout = styled.SafeAreaView`
@@ -25,11 +25,12 @@ const LocationText = styled.Text`
   text-align: left;
 `;
 const LocationListContainer = styled.View`
+  margin-top: 16px;
   width: 100%;
   flex: 1;
 `;
 const TitleContainer = styled.View`
-  height: 72px;
+  height: 56px;
   width: ${ScreenWidth}px;
   background-color: #eef4ff;
   justify-content: space-between;
@@ -66,7 +67,7 @@ const PlaceListContainer = styled.View`
   width: 100%;
   align-items: flex-start;
   justify-content: space-between;
-  height: ${diagramRadius * 3}px;
+  height: ${diagramRadius * 2}px;
 `;
 const PlaceText = styled.Text`
   top: ${diagramRadius}px;
@@ -97,7 +98,6 @@ const RoutePage = ({ route }) => {
       let JWTToken =
         'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODg0NjAwMzMsImV4cCI6MTY4OTA2NDgzMywic3ViIjoibmVvc2VsZjExMDVAZ21haWwuY29tIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.EUnyvx1Sk0MPgoOvihGjL_2U-srcR4wLQzOXGh2PMBaslrguB-uh7VQlBWoygUOXhYaVCqKr60yEuQjpglxmbg';
       let url = `http://3.37.189.80/trip/${tripId}`;
-      //   const queryStr = `?longitude=${longitude}&latitude=${latitude}&page=${page}&size=${size}`;
       const response = await axios.get(url, { headers: { Authorization: `Bearer ${JWTToken}` } });
       const tripData = response.data;
       console.log(tripData);
@@ -111,11 +111,13 @@ const RoutePage = ({ route }) => {
   };
   useEffect(() => {
     let tripId = route.params.tripId;
+
     fetchTripInfo(tripId)
       .then(data => setData(data))
       .then(console.log(data));
   }, []);
-  //   console.log(data.locationInfo.map(item => console.log(item.place)));
+  //console.log(data.locationInfo.map(item => console.log(item.place)));
+
   return (
     <>
       <ScreenLayout>
@@ -124,7 +126,7 @@ const RoutePage = ({ route }) => {
         <PlaceListContainer>
           <HorizontalLine />
           {data.locationInfo?.map((item, id) => (
-            <PlaceContainer>
+            <PlaceContainer key={id}>
               <SequenceDiagram>
                 <SequenceText>{id}</SequenceText>
               </SequenceDiagram>
@@ -132,12 +134,14 @@ const RoutePage = ({ route }) => {
             </PlaceContainer>
           ))}
         </PlaceListContainer>
-        <LocationListContainer>{/* <LocationList data={data} /> */}</LocationListContainer>
+
+        <LocationListContainer>
+          <PathList data={data} />
+        </LocationListContainer>
         <TitleContainer>
           <TitleText>{data.title}</TitleText>
           <BookmarkContainer>
             <BookmarkText></BookmarkText>
-            {/* <WithLocalSvg */}
           </BookmarkContainer>
         </TitleContainer>
       </ScreenLayout>
