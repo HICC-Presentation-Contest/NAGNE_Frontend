@@ -8,7 +8,7 @@ let TextContainerHeight = 88;
 
 const CardContainer = styled.TouchableOpacity`
   width: ${CardWidth}px;
-  margin-left: ${CardMargin}px;
+  margin-left: ${CardMargin - 24}px;
   height: ${CardWidth * 1.333 + TextContainerHeight}px;
 `;
 const Thumbnail = styled.Image`
@@ -41,7 +41,10 @@ export default MapThumbnails = ({ ...props }) => {
     props.parentFunction(tripId);
   };
   const renderItem = ({ item, index }) => (
-    <CardContainer onPress={() => handleCardPress(item.tripId)}>
+    <CardContainer
+      style={{ shadowColor: '#fff', shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.3, shadowRadius: 24 }}
+      onPress={() => handleCardPress(item.tripId)}
+    >
       <Thumbnail style={{ resizeMode: 'contain' }} source={{ uri: item.tripImageUrl }} />
       <TextContainer>
         <Title>{item.title}</Title>

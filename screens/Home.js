@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Frame from '../assets/FIRST_1.png';
-import { Image } from 'react-native';
 import MapThumbnails from '../components/MapThumbnails';
 import axios from 'axios';
 import Header from '../components/Header';
@@ -11,6 +9,7 @@ import * as Location from 'expo-location';
 import { WithLocalSvg } from 'react-native-svg';
 import LocationIcon from '../assets/images/location.svg';
 import { API_KEY } from '../PrivateConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ScreenLayout = styled.SafeAreaView`
   flex-direction: column;
@@ -68,29 +67,29 @@ const Home = ({ navigation }) => {
   let JWTToken =
     'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODgxMzExODMsImV4cCI6MTY4ODczNTk4Mywic3ViIjoibmVvc2VsZjExMDVAZ21haWwuY29tIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.rBuCHKreXBfSE49AQtqnmLvB15zKBhMUCj4xnV6Cv_W-gyhJW2hA9iFYTnVPhIlLXTymo04FqKhsI03A9bziBg';
 
-  const fetchMyLocationData = async (longitude, latitude, pageable) => {
+  const fetchMyLocationData = async (Token, longitude, latitude, pageable) => {
     try {
       let url = 'http://3.37.189.80/trip';
       const { page, size } = pageable;
       const queryStr = `?longitude=${longitude}&latitude=${latitude}&page=${page}&size=${size}`;
-      const response = await axios.get(url + queryStr, { headers: { Authorization: `Bearer ${JWTToken}` } });
+      const response = await axios.get(url + queryStr, { headers: { Authorization: `Bearer ${Token}` } });
       const tripData = response.data.content;
       return tripData;
     } catch (error) {
-      console.error('Failed to fetch trip data:', error.response);
+      console.error('Failed to fetch trip data:');
     }
   };
-  const fetchPopularData = async (longitude, latitude, pageable) => {
+  const fetchPopularData = async (Token, longitude, latitude, pageable) => {
     try {
       let url = 'http://3.37.189.80/trip/popularity';
       const { page, size } = pageable;
       const queryStr = `?longitude=${longitude}&latitude=${latitude}&page=${page}&size=${size}`;
-      const response = await axios.get(url + queryStr, { headers: { Authorization: `Bearer ${JWTToken}` } });
+      const response = await axios.get(url + queryStr, { headers: { Authorization: `Bearer ${Token}` } });
       const tripData = response.data.content;
       console.log('poluarData Fetched:', tripData);
       return tripData;
     } catch (error) {
-      console.error('Failed to fetch trip data:', error.response);
+      console.error('Failed to fetch trip data:');
     }
   };
 
@@ -124,6 +123,8 @@ const Home = ({ navigation }) => {
   };
   useEffect(() => {
     (async () => {
+      // let JWTToken = await AsyncStorage.getItem('token');
+      // console.log('TOKEN:', JWTToken);
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setLocation('Permission to access location was denied');
@@ -135,8 +136,8 @@ const Home = ({ navigation }) => {
       console.log('현재 사용자 위치:', longitude, latitude);
       const pageable = { page: 0, size: 20 };
 
-      fetchMyLocationData(longitude, latitude, pageable).then(data => setMyLocationData(data));
-      fetchPopularData(longitude, latitude, pageable).then(data => setPopularData(data));
+      fetchMyLocationData(JWTToken, longitude, latitude, pageable).then(data => setMyLocationData(data));
+      fetchPopularData(JWTToken, longitude, latitude, pageable).then(data => setPopularData(data));
       getDistrictFromCoordinates(latitude, longitude).then(district => {
         setLocation(district);
       });

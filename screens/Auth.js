@@ -10,26 +10,26 @@ WebBrowser.maybeCompleteAuthSession();
 const Auth = ({ parentFunction }) => {
   const androidClientId = '960989891259-cd3e0f1r6e41bu4la3t8h3ufrp4iqgo8.apps.googleusercontent.com';
   const webClientId = '960989891259-63edtm97k3hq6t8j84q13p14mg60fpv7.apps.googleusercontent.com';
-  // const [accessToken, setAccessToken] = useState(null);
   const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
   const handleLogin = async () => {
-    console.log(redirectUri);
-    const user = await AsyncStorage.getItem('@user');
+    const token = await AsyncStorage.getItem('token');
     const response = await AuthSession.startAsync({
       authUrl: `https://accounts.google.com/o/oauth2/v2/auth?client_id=${webClientId}&redirect_uri=${encodeURIComponent(
         redirectUri,
       )}&response_type=code&scope=email%20profile%20openid`,
     });
     if (response?.type === 'success') {
-      if (!user) {
+      if (!token) {
+        console.log(response);
         await AsyncStorage.setItem('token', response.params.code);
       } else {
+        console.log(response);
         console.log('user 존재함:', response.params.code);
       }
       console.log('로그인 성공, 현재 토큰:', response.params.code);
       parentFunction();
     } else {
-      console.error('로그인 오류: ');
+      console.error('로그인 오류');
     }
   };
 
