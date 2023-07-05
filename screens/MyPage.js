@@ -6,6 +6,7 @@ import dummy from '../dummy/travelSimpleInfo.json';
 import dUserInfo from '../dummy/userInfo.json';
 import bookmarkedIcon from '../assets/bookmarked.png';
 import nonBookmarkedIcon from '../assets/non-bookmarked.png';
+import { Ionicons } from '@expo/vector-icons';
 
 const Container = styled.View`
   flex: 1;
@@ -183,11 +184,12 @@ export default function MyPage({ navigation, route }) {
       navigation.setOptions({
         headerLeft: () => (
           <TouchableOpacity
+            style={{ marginLeft: 10 }}
             onPress={() => {
               navigation.goBack();
             }}
           >
-            <Text style={{ marginLeft: 10 }}>뒤로가기</Text>
+            <Ionicons name="chevron-back" size={24} color="black" />
           </TouchableOpacity>
         ),
         headerRight: () => (
@@ -392,11 +394,11 @@ export default function MyPage({ navigation, route }) {
           <ProfilePicture source={{ uri: userInfo.profileImageUrl }} />
         </ProfileHeader>
         <Follow>
-          <FollowItem onPress={() => navigation.navigate('Follower', { userId: userId })}>
+          <FollowItem onPress={() => navigation.push('Follower', { userId: userId })}>
             <Text>팔로워</Text>
             <Text>{userInfo.followerCount}</Text>
           </FollowItem>
-          <FollowItem onPress={() => navigation.navigate('Following', { userId: userId })}>
+          <FollowItem onPress={() => navigation.push('Following', { userId: userId })}>
             <Text>팔로잉</Text>
             <Text>{userInfo.followingCount}</Text>
           </FollowItem>

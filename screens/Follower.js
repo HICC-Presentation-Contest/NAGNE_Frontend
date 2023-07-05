@@ -47,7 +47,6 @@ export default function Follower({ navigation, route }) {
   const [userList, setUserList] = useState(dummy.content);
   const [searchQuery, setSearchQuery] = useState('');
   const userId = route.params.userId;
-  const goToMyPage = () => navigation.navigate('MyPage', { userId: userId });
 
   let JWTToken =
     'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODgyNzM4NTEsImV4cCI6MTY4ODg3ODY1MSwic3ViIjoic2Vobzc4QGcuaG9uZ2lrLmFjLmtyIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.zAI5H-a0GejTLlWRznR3_jrQ1Q0zVuXWQlBlwTBwOcNFA6BmqfK6-qx67F4cfzCTL395uYg2zQrUxjE3zCyl4Q';
@@ -81,7 +80,7 @@ export default function Follower({ navigation, route }) {
 
   const renderItem = ({ item: info }) => {
     return (
-      <TouchableOpacity key={info.userId} onPress={() => navigation.navigate('MyPage', { userId: info.userId })}>
+      <TouchableOpacity key={info.userId} onPress={() => navigation.push('MyPage', { userId: info.userId })}>
         <FollowerItem>
           <ProfileHeader>
             <ProfilePicture source={{ uri: info.profileImage }} />
