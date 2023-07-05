@@ -174,6 +174,45 @@ export default function MyPage({ navigation, route }) {
   const [bookmarkedPosts, setBookmarkedPosts] = useState({});
   const userId = route.params.userId;
 
+  const loggedInUserId = 7;
+
+  useEffect(() => {
+    // 현재 페이지의 사용자의 userId가 로그인한 사용자와 다른 경우 뒤로가기 버튼과 팔로우 버튼 표시
+    if (loggedInUserId !== userId) {
+      console.log('조건문 1 실행');
+      navigation.setOptions({
+        headerLeft: () => (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Text style={{ marginLeft: 10 }}>뒤로가기</Text>
+          </TouchableOpacity>
+        ),
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => {
+              /* 팔로우 토글 로직 구현 */
+            }}
+          >
+            <Text style={{ marginRight: 10 }}>
+              {/* 팔로우 상태에 따라 텍스트 변경 */}
+              팔로우
+            </Text>
+          </TouchableOpacity>
+        ),
+      });
+    } else {
+      // 일치하는 경우 뒤로가기 버튼을 제거하고 팔로우 버튼도 제거
+      navigation.setOptions({
+        headerLeft: () => null,
+        headerRight: () => null,
+      });
+      console.log('조건문 2 실행');
+    }
+  }, [userId, loggedInUserId]);
+
   useEffect(() => {
     console.log('userId changed:', userId);
   }, [userId]);
@@ -193,7 +232,7 @@ export default function MyPage({ navigation, route }) {
   };
 
   let JWTToken =
-    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODg0Njk5NjgsImV4cCI6MTY4OTA3NDc2OCwic3ViIjoibmVvc2VsZjExMDVAZ21haWwuY29tIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.fCy2AshXoBGlSiBDQ729RdmcSDlOC_ZV_aTNMs1RlNBswR18mint1GzT4eEvlOVbseDPIu6RwUkIO2iYKtNu3A';
+    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODg1NDY2NTIsImV4cCI6MTY4OTE1MTQ1Miwic3ViIjoic2Vobzc4QGcuaG9uZ2lrLmFjLmtyIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.P81MwwK7CR5kyTa--S7KX5zqRPM3mWzGg_JQoi7dgWIBn5RtbXABde4MXizmY7lXkpOU6fvmKQFwpxot48kQog';
 
   //여행 간단 정보 조회
   useEffect(() => {
@@ -213,29 +252,6 @@ export default function MyPage({ navigation, route }) {
     fetchData();
   }, [userId]);
 
-  //   // 북마크 test 용
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       try {
-  //         const response = await axios.post(
-  //           `http://3.37.189.80/bookmark?tripId=74
-  //         `,
-  //           {
-  //             headers: { Authorization: `Bearer ${JWTToken}` },
-  //           },
-  //         );
-  //         console.log(response.data); // Server response data
-  //         console.log('77성공'); // Server response data
-
-  //         // Perform necessary actions with the response data
-  //       } catch (error) {
-  //         console.error(error); // Error handling
-  //         console.error('77실패'); // Error handling
-  //       }
-  //     };
-  //     fetchData();
-  //   }, [userId]);
-
   //여행 정보 조회
   useEffect(() => {
     const fetchData = async () => {
@@ -253,7 +269,7 @@ export default function MyPage({ navigation, route }) {
       }
     };
     fetchData();
-  }, [userId]);
+  }, [userId, bookmarkedPosts]);
 
   //유저 페이지 정보 조회
   useEffect(() => {
@@ -332,8 +348,9 @@ export default function MyPage({ navigation, route }) {
         const response = await axios.post(`http://3.37.189.80/bookmark?tripId=${myTripId}`, routeData, {
           headers: { Authorization: `Bearer ${JWTToken}`, 'Content-Type': 'multipart/form-data' },
         });
-
+        console.log('북마크 생성 성공');
         console.log(myTripId);
+        console.log(post.bookmark);
         // 응답이 정상적인 경우, 프론트엔드의 상태 업데이트
         if (response.status === 200) {
           setBookmarkedPosts(bookmarkedPosts => ({
@@ -362,7 +379,7 @@ export default function MyPage({ navigation, route }) {
           onPress={() => handleBookmarkPress(post.tripId)}
           style={{ position: 'absolute', top: 10, right: 10 }}
         >
-          <Image style={{ width: 24, height: 24 }} source={isBookmarked ? bookmarkedIcon : nonBookmarkedIcon} />
+          <Image style={{ width: 24, height: 24 }} source={post.bookmark ? bookmarkedIcon : nonBookmarkedIcon} />
         </TouchableOpacity>
       </Map>
     );

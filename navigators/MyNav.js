@@ -7,6 +7,7 @@ import userInfo from '../dummy/userInfo.json';
 import { Image } from 'react-native';
 
 const Stack = createStackNavigator();
+const loggedInUserId = 7;
 
 export default function MyNav() {
   return (
@@ -35,7 +36,7 @@ export default function MyNav() {
           ),
         }}
         component={MyPage}
-        initialParams={{ userId: '3' }}
+        initialParams={{ userId: 3 }}
       />
       <Stack.Screen
         name="Follower"
