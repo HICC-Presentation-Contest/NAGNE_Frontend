@@ -37,7 +37,7 @@ export default function MyNav() {
           headerBackImage: () => <Ionicons name="chevron-back" size={24} color="black" />,
         }}
         component={MyPage}
-        initialParams={{ userId: 7 }}
+        initialParams={{ userId: 3 }}
       />
       <Stack.Screen
         name="Follower"
