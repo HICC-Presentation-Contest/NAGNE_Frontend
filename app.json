@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/OR.png",
     "userInterfaceStyle": "light",
+    "scheme": "nagne-native",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -15,13 +16,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.nagnenative"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/splash.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.nagnenative"
     },
     "web": {
       "favicon": "./assets/favicon.png"
