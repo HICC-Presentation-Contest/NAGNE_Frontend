@@ -87,6 +87,7 @@ const Home = ({ navigation }) => {
       const queryStr = `?longitude=${longitude}&latitude=${latitude}&page=${page}&size=${size}`;
       const response = await axios.get(url + queryStr, { headers: { Authorization: `Bearer ${JWTToken}` } });
       const tripData = response.data.content;
+      console.log('poluarData Fetched:', tripData);
       return tripData;
     } catch (error) {
       console.error('Failed to fetch trip data:', error.response);

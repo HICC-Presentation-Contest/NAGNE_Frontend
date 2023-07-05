@@ -5,7 +5,6 @@ import MyNav from './MyNav';
 import HomeNav from './HomeNav';
 import TabIcon from '../components/nav/TabIcon';
 import Storage from '../screens/Storage';
-import Test from '../screens/Test';
 
 const Tabs = createBottomTabNavigator();
 
@@ -32,15 +31,6 @@ export default function LoggedInNav() {
       >
         {() => <HomeNav />}
       </Tabs.Screen>
-      <Tabs.Screen
-        name="Test"
-        component={Test}
-        options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon iconName={'home-outline'} color={color} focused={focused} />
-          ),
-        }}
-      />
       <Tabs.Screen
         name="CreateRoute"
         options={{
