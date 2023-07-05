@@ -9,7 +9,9 @@ import * as Location from 'expo-location';
 import { WithLocalSvg } from 'react-native-svg';
 import LocationIcon from '../assets/images/location.svg';
 import { API_KEY } from '../PrivateConfig';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Back from '../assets/appBack.jpg';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Image } from 'react-native';
 
 const ScreenLayout = styled.SafeAreaView`
   flex-direction: column;
@@ -131,8 +133,11 @@ const Home = ({ navigation }) => {
         return;
       }
       let location = await Location.getCurrentPositionAsync({});
-      const latitude = location.coords.latitude;
-      const longitude = location.coords.longitude;
+      // const latitude = location.coords.latitude;
+      // const longitude = location.coords.longitude;
+
+      const latitude = 37;
+      const longitude = 126;
       console.log('현재 사용자 위치:', longitude, latitude);
       const pageable = { page: 0, size: 20 };
 
@@ -144,23 +149,30 @@ const Home = ({ navigation }) => {
     })();
   }, []);
   return (
-    <ScreenLayout>
-      <Header />
-      <UpperBase>
-        <CardTypeContainer>
-          <ToogleBase onPress={() => setMode(0)} selected={mode == 0} icon={true} text="내 위치" />
-          <Line />
-          <ToogleBase onPress={() => setMode(1)} selected={mode == 1} icon={false} text="인기" />
-        </CardTypeContainer>
-        <ThumbnailsContainer>
-          <MapThumbnails parentFunction={navigateToRoutePage} data={mode == 0 ? myLocationData : popularData} />
-        </ThumbnailsContainer>
-      </UpperBase>
-      <LocationContainer>
-        <WithLocalSvg style={{ color: '#0351ea' }} width={22} height={22} asset={LocationIcon} />
-        <LocationText>{location}</LocationText>
-      </LocationContainer>
-    </ScreenLayout>
+    <>
+      <Image
+        source={Back}
+        style={{ resizeMode: 'cover', width: '100%', height: '100%', position: 'absolute' }}
+        blurRadius={70}
+      />
+      <ScreenLayout>
+        <Header />
+        <UpperBase>
+          <CardTypeContainer>
+            <ToogleBase onPress={() => setMode(0)} selected={mode == 0} icon={true} text="내 위치" />
+            <Line />
+            <ToogleBase onPress={() => setMode(1)} selected={mode == 1} icon={false} text="인기" />
+          </CardTypeContainer>
+          <ThumbnailsContainer>
+            <MapThumbnails parentFunction={navigateToRoutePage} data={mode == 0 ? myLocationData : popularData} />
+          </ThumbnailsContainer>
+        </UpperBase>
+        <LocationContainer>
+          <WithLocalSvg style={{ color: '#0351ea' }} width={22} height={22} asset={LocationIcon} />
+          <LocationText>{location}</LocationText>
+        </LocationContainer>
+      </ScreenLayout>
+    </>
   );
 };
 

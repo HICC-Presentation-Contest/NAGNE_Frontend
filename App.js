@@ -22,7 +22,7 @@ export default function App() {
     console.log(token);
     if (token) {
       console.log(token);
-      setLoggedIn(true);
+      // setLoggedIn(true);
     }
   };
 
