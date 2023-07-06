@@ -9,7 +9,6 @@ let TextContainerHeight = 88;
 
 const CardContainer = styled.TouchableOpacity`
   width: ${CardWidth}px;
-  margin-right: ${CardMargin - 24}px;
   height: ${CardWidth * 1.333 + TextContainerHeight}px;
 `;
 const Thumbnail = styled.Image`
@@ -47,11 +46,20 @@ export default MapThumbnails = ({ ...props }) => {
     const inputRange = [-1, 0, CardWidth * index, CardWidth * (index + 4)];
     const scale = scrollX.interpolate({
       inputRange,
-      outputRange: [1, 0.92, 1, 0.5],
+      outputRange: [1, 0.98, 1, 0],
     });
-    console.log(scale);
     return (
-      <Animated.View style={{ transform: [{ scale }] }}>
+      <Animated.View
+        style={{
+          transform: [{ scale }],
+          elevation: 10,
+          backgroundColor: 'white',
+          width: CardWidth,
+          height: '100%',
+          marginRight: CardMargin - 24,
+          borderRadius: 8,
+        }}
+      >
         <CardContainer
           // style={{ shadowColor: '#fff', shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.3, shadowRadius: 24 }}
           onPress={() => handleCardPress(item.tripId)}
