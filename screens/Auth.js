@@ -12,7 +12,6 @@ const addToken = async token => {
   await AsyncStorage.setItem('token', token);
 };
 const Auth = ({ parentFunction }) => {
-  
   const androidClientId = '960989891259-cd3e0f1r6e41bu4la3t8h3ufrp4iqgo8.apps.googleusercontent.com';
   const webClientId = '960989891259-63edtm97k3hq6t8j84q13p14mg60fpv7.apps.googleusercontent.com';
   const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
@@ -46,7 +45,7 @@ const Auth = ({ parentFunction }) => {
       code: code,
       client_id: webClientId,
       client_secret: CLIENT_SECRET, //문제없
-      grant_type='authorization_code'
+      // grant_type='authorization_code'
     };
 
     try {
