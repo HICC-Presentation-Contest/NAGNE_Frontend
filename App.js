@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Auth from './screens/Auth';
 import AppLoading from 'expo-app-loading';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as AuthSession from 'expo-auth-session';
 
 const MyTheme = {
   ...DefaultTheme,
@@ -15,12 +14,9 @@ const MyTheme = {
 };
 
 export default function App() {
-  const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
-  console.log(redirectUri);
-
   const [loading, setLoading] = useState(true);
   const onFinish = () => setLoading(false);
-  let [loggedIn, setLoggedIn] = useState(true);
+  let [loggedIn, setLoggedIn] = useState(false);
   const preload = async () => {
     const token = await AsyncStorage.getItem('token');
     console.log('AsyncStorage 내 토큰 유무:', token);
