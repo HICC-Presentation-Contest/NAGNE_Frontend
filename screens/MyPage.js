@@ -156,7 +156,7 @@ const MapContainer = styled.View`
   margin-left: 7px;
 `;
 
-const Map = styled.View`
+const Map = styled.TouchableOpacity`
   width: 170px;
   height: 176px;
   margin-left: 10px;
@@ -193,7 +193,7 @@ export default function MyPage({ navigation, route }) {
   const [follow, setFollow] = useState(false);
 
   const loggedInUserId = 7;
-
+  // 팔로우 상태 get
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -417,7 +417,7 @@ export default function MyPage({ navigation, route }) {
     };
 
     return (
-      <Map key={post.tripId}>
+      <Map key={post.tripId} onPress={() => navigation.push('RoutePage', { tripId: post.tripId })}>
         <Image
           style={{ width: 168, height: 174, borderRadius: 5 }}
           source={{
