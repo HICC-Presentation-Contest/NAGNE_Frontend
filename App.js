@@ -34,7 +34,6 @@ export default function App() {
     return <AppLoading startAsync={preload} onError={console.warn} onFinish={onFinish} />;
   }
   const Login = () => {
-    console.log('hi');
     setLoggedIn(true);
   };
   return (
