@@ -129,8 +129,8 @@ const Home = ({ navigation }) => {
       }
       let location = await Location.getCurrentPositionAsync({});
       getToken().then(token => {
-        fetchMyLocationData(JSON.parse(token), longitude, latitude, pageable).then(data => setMyLocationData(data));
-        fetchPopularData(JSON.parse(token), longitude, latitude, pageable).then(data => setPopularData(data));
+        fetchMyLocationData(token, longitude, latitude, pageable).then(data => setMyLocationData(data));
+        fetchPopularData(token, longitude, latitude, pageable).then(data => setPopularData(data));
       });
       // const latitude = location.coords.latitude;
       // const longitude = location.coords.longitude;

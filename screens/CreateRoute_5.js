@@ -6,11 +6,13 @@ import { styled } from 'styled-components/native';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 import { View, Text } from 'react-native';
+import { getToken } from '../components/Shared';
 
 const MapContainer = styled.View`
   margin-top: 40px;
   elevation: 9;
-  box-shadow: 24px 16px 16px black;
+  background-color: black;
+  /* box-shadow: 24px 16px 16px black; */
   width: 300px;
   height: 400px;
 `;
@@ -18,9 +20,6 @@ const MapContainer = styled.View`
 const CreateRoute_5 = ({ route }) => {
   const [mapSnapshot, setMapSnapshot] = useState(null);
   let url = 'http://3.37.189.80/trip';
-  let JWTToken =
-    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODgyODgyODAsImV4cCI6MTY4ODg5MzA4MCwic3ViIjoibmVvc2VsZjExMDVAZ21haWwuY29tIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.xL-iMxiwJl3U6ZntsIrWueaK2dNx9DwO1GABGbigJhNpw4i4IIBmT9mh7wxGqIqgnXl4MN-2MEML8VULrf3Npw';
-
   const uploadDatas = async (hashtag, title, region, locations, Thumbnail) => {
     const processData = async () => {
       const routeData = new FormData();
@@ -58,10 +57,13 @@ const CreateRoute_5 = ({ route }) => {
 
     try {
       const formData = await processData();
-      const response = await axios.post(url, formData, {
-        headers: { Authorization: `Bearer ${JWTToken}`, 'Content-Type': 'multipart/form-data' },
+      getToken().then(token => {
+        axios
+          .post(url, formData, {
+            headers: { Authorization: token, 'Content-Type': 'multipart/form-data' },
+          })
+          .then(response => console.log('response for createRoute', response.config.data));
       });
-      console.log('Response:', response.config.data);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -101,7 +103,7 @@ const CreateRoute_5 = ({ route }) => {
     let locations = route.params.locations;
     setTimeout(() => {
       takeSnapshot().then(result => uploadDatas(hashtag, title, region.name, locations, result));
-    }, 1000);
+    }, 2000);
   }, []);
   const mapRef = useRef(null);
 

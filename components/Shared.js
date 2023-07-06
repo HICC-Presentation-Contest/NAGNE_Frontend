@@ -7,7 +7,7 @@ export const ScreenHeight = Dimensions.get('screen').height;
 export const getToken = async () => {
   let token = await AsyncStorage.getItem('token');
   if (token) {
-    return token;
+    return JSON.parse(token);
   } else {
     console.log('토큰 발급이 안되어있는뎁쇼?');
   }
