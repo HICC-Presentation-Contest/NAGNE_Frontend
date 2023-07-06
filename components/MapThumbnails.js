@@ -73,13 +73,14 @@ export default MapThumbnails = ({ ...props }) => {
       </Animated.View>
     );
   };
+
   return (
     <Animated.FlatList
       horizontal={true}
       onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: true })}
       showsHorizontalScrollIndicator={true}
       contentContainerStyle={{
-        marginLeft: 24,
+        paddingLeft: 28,
         alignItems: 'center',
       }}
       data={props.data}
