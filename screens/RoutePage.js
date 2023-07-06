@@ -135,11 +135,11 @@ const RoutePage = ({ route, navigation }) => {
       console.error('Failed to fetch trip data:', error.response);
     }
   };
-  const fetchFollowed = async userId => {
+  const fetchFollowed = async (token, userId) => {
     try {
       let url = `http://3.37.189.80/follow/check?receiverId=${userId}`;
-      const response = await axios.get(url, { headers: { Authorization: `Bearer ${JWTToken}` } });
-      console.log(response.data);
+      const response = await axios.get(url, { headers: { Authorization: token } });
+      console.log('팔로우 상태', response.data);
       setFollow(response.data);
     } catch (error) {
       console.error('Failed to fetch follow data:', error.response);
@@ -154,6 +154,7 @@ const RoutePage = ({ route, navigation }) => {
       fetchBookmarkCount(token, tripId);
       fetchBookmarked(token, tripId);
       fetchTripInfo(token, tripId).then(data => setData(data));
+      fetchFollowed(token, tripId);
     });
   }, []);
   //console.log(data.locationInfo.map(item => console.log(item.place)));
