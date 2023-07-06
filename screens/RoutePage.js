@@ -8,13 +8,14 @@ import RoutePageHeader from '../components/RoutePageHeader';
 import { WithLocalSvg } from 'react-native-svg';
 import PathList from '../components/PathList';
 import Bookmark from '../assets/images/bookmark_Active.svg';
+import { Platform } from 'react-native';
 
 let diagramRadius = 40;
 const ScreenLayout = styled.SafeAreaView`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  height: ${ScreenHeight - 80}px;
+  flex: 1;
   margin-top: 8%;
   width: ${ScreenWidth - 32}px;
   margin-left: 16px;

@@ -17,7 +17,7 @@ const ScreenLayout = styled.SafeAreaView`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: ${ScreenHeight - 80}px;
+  flex: 1;
   margin-top: 8%;
   width: ${ScreenWidth}px;
 `;
