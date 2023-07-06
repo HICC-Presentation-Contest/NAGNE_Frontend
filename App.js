@@ -23,9 +23,9 @@ export default function App() {
   let [loggedIn, setLoggedIn] = useState(true);
   const preload = async () => {
     const token = await AsyncStorage.getItem('token');
-    console.log(token);
+    console.log('AsyncStorage 내 토큰 유무:', token);
     if (token) {
-      console.log(token);
+      console.log('로그인 절차 생략');
       setLoggedIn(true);
     }
   };
@@ -40,8 +40,7 @@ export default function App() {
   return (
     <>
       <NavigationContainer theme={MyTheme}>
-        <LoggedInNav />
-        {/* {loggedIn ? <LoggedInNav /> : <Auth parentFunction={Login} />} */}
+        {loggedIn ? <LoggedInNav /> : <Auth parentFunction={Login} />}
       </NavigationContainer>
     </>
   );

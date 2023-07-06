@@ -3,21 +3,21 @@ import MapThumbnails from '../components/MapThumbnails';
 import axios from 'axios';
 import Header from '../components/Header';
 import { styled } from 'styled-components/native';
-import { ScreenHeight, ScreenWidth } from '../components/Shared';
+import { getToken, ScreenHeight, ScreenWidth } from '../components/Shared';
 import ToogleBase from '../components/Home/ToogleBase';
 import * as Location from 'expo-location';
 import { WithLocalSvg } from 'react-native-svg';
 import LocationIcon from '../assets/images/location.svg';
 import { API_KEY } from '../PrivateConfig';
 import Back from '../assets/appBack.jpg';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Image } from 'react-native';
 
 const ScreenLayout = styled.SafeAreaView`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: ${ScreenHeight - 80}px;
+  flex: 1;
   margin-top: 8%;
   width: ${ScreenWidth}px;
 `;
@@ -34,8 +34,7 @@ const CardTypeContainer = styled.View`
   width: 70%;
 `;
 const ThumbnailsContainer = styled.View`
-  height: 500px;
-  margin-top: 24px;
+  height: 540px;
 `;
 const LocationContainer = styled.View`
   height: 48px;
@@ -48,10 +47,9 @@ const LocationContainer = styled.View`
   align-items: center;
 `;
 const Line = styled.View`
-  border: 1px solid;
+  border: #0351ea 1px solid;
   margin-left: 28px;
   margin-right: 36px;
-  color: #0351ea;
   height: 18px;
 `;
 const LocationText = styled.Text`
@@ -66,19 +64,17 @@ const Home = ({ navigation }) => {
   let [popularData, setPopularData] = useState(null);
   let [mode, setMode] = useState(0);
   const [location, setLocation] = useState(null);
-  let JWTToken =
-    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODgxMzExODMsImV4cCI6MTY4ODczNTk4Mywic3ViIjoibmVvc2VsZjExMDVAZ21haWwuY29tIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.rBuCHKreXBfSE49AQtqnmLvB15zKBhMUCj4xnV6Cv_W-gyhJW2hA9iFYTnVPhIlLXTymo04FqKhsI03A9bziBg';
 
   const fetchMyLocationData = async (Token, longitude, latitude, pageable) => {
     try {
       let url = 'http://3.37.189.80/trip';
       const { page, size } = pageable;
       const queryStr = `?longitude=${longitude}&latitude=${latitude}&page=${page}&size=${size}`;
-      const response = await axios.get(url + queryStr, { headers: { Authorization: `Bearer ${Token}` } });
+      const response = await axios.get(url + queryStr, { headers: { Authorization: Token } });
       const tripData = response.data.content;
       return tripData;
     } catch (error) {
-      console.error('Failed to fetch trip data:');
+      console.error('Failed to fetch myLocation data:', Token, error);
     }
   };
   const fetchPopularData = async (Token, longitude, latitude, pageable) => {
@@ -86,12 +82,12 @@ const Home = ({ navigation }) => {
       let url = 'http://3.37.189.80/trip/popularity';
       const { page, size } = pageable;
       const queryStr = `?longitude=${longitude}&latitude=${latitude}&page=${page}&size=${size}`;
-      const response = await axios.get(url + queryStr, { headers: { Authorization: `Bearer ${Token}` } });
+      const response = await axios.get(url + queryStr, { headers: { Authorization: Token } });
       const tripData = response.data.content;
-      console.log('poluarData Fetched:', tripData);
+      console.log('poluarData Fetched');
       return tripData;
     } catch (error) {
-      console.error('Failed to fetch trip data:');
+      console.error('Failed to fetch Popular data:', Token, error);
     }
   };
 
@@ -125,24 +121,24 @@ const Home = ({ navigation }) => {
   };
   useEffect(() => {
     (async () => {
-      // let JWTToken = await AsyncStorage.getItem('token');
-      // console.log('TOKEN:', JWTToken);
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setLocation('Permission to access location was denied');
         return;
       }
       let location = await Location.getCurrentPositionAsync({});
-      // const latitude = location.coords.latitude;
-      // const longitude = location.coords.longitude;
+      getToken().then(token => {
+        fetchMyLocationData(token, longitude, latitude, pageable).then(data => setMyLocationData(data));
+        fetchPopularData(token, longitude, latitude, pageable).then(data => setPopularData(data));
+      });
+      const latitude = location.coords.latitude;
+      const longitude = location.coords.longitude;
 
-      const latitude = 37;
-      const longitude = 126;
+      // const latitude = 37;
+      // const longitude = 126;
       console.log('현재 사용자 위치:', longitude, latitude);
       const pageable = { page: 0, size: 20 };
 
-      fetchMyLocationData(JWTToken, longitude, latitude, pageable).then(data => setMyLocationData(data));
-      fetchPopularData(JWTToken, longitude, latitude, pageable).then(data => setPopularData(data));
       getDistrictFromCoordinates(latitude, longitude).then(district => {
         setLocation(district);
       });

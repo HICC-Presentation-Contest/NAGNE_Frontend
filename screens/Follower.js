@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import dummy from '../dummy/follow.json';
 import { FlatList, Image, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import { getToken } from '../components/Shared';
 
 const Container = styled.View`
   flex: 1;
@@ -48,9 +49,6 @@ export default function Follower({ navigation, route }) {
   const [searchQuery, setSearchQuery] = useState('');
   const userId = route.params.userId;
 
-  let JWTToken =
-    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODgyNzM4NTEsImV4cCI6MTY4ODg3ODY1MSwic3ViIjoic2Vobzc4QGcuaG9uZ2lrLmFjLmtyIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.zAI5H-a0GejTLlWRznR3_jrQ1Q0zVuXWQlBlwTBwOcNFA6BmqfK6-qx67F4cfzCTL395uYg2zQrUxjE3zCyl4Q';
-
   useEffect(() => {
     const infos = dummy.content || [];
     setUserList(infos);
@@ -59,11 +57,16 @@ export default function Follower({ navigation, route }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://3.37.189.80/follow/follower/${userId}?page=0&size=10`, {
-          headers: { Authorization: `Bearer ${JWTToken}` },
+        getToken().then(token => {
+          axios
+            .get(`http://3.37.189.80/follow/follower/${userId}?page=0&size=10`, {
+              headers: { Authorization: token },
+            })
+            .then(response => {
+              console.log('팔로워 데이터 get 반응값:', response.data);
+              setUserList(response.data.content);
+            });
         });
-        console.log(response.data);
-        setUserList(response.data.content);
         // Perform necessary actions with the response data
       } catch (error) {
         console.error(error); // Error handling

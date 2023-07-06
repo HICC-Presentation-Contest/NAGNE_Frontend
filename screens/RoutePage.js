@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components/native';
-import { ScreenHeight, ScreenWidth } from '../components/Shared';
+import { getToken, ScreenHeight, ScreenWidth } from '../components/Shared';
 import axios from 'axios';
 import leftArrow from '../assets/images/left_arrow.png';
 import Header from '../components/Header';
@@ -8,13 +8,14 @@ import RoutePageHeader from '../components/RoutePageHeader';
 import { WithLocalSvg } from 'react-native-svg';
 import PathList from '../components/PathList';
 import Bookmark from '../assets/images/bookmark_Active.svg';
+import { Platform } from 'react-native';
 
 let diagramRadius = 40;
 const ScreenLayout = styled.SafeAreaView`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  height: ${ScreenHeight - 80}px;
+  flex: 1;
   margin-top: 8%;
   width: ${ScreenWidth - 32}px;
   margin-left: 16px;
@@ -100,37 +101,34 @@ const RoutePage = ({ route, navigation }) => {
   let [follow, setFollow] = useState(false);
   let [bookmarked, setBookmarked] = useState(false);
   let [bookmarkCount, setBookmarkCount] = useState('');
-  let JWTToken =
-    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODg1NDY2NTIsImV4cCI6MTY4OTE1MTQ1Miwic3ViIjoic2Vobzc4QGcuaG9uZ2lrLmFjLmtyIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.P81MwwK7CR5kyTa--S7KX5zqRPM3mWzGg_JQoi7dgWIBn5RtbXABde4MXizmY7lXkpOU6fvmKQFwpxot48kQog';
-
-  const handleBookmarkPressed = async tripId => {
+  const handleBookmarkPressed = async (token, tripId) => {
     setBookmarked(bookmarked => !bookmarked);
     const routeData = new FormData();
     routeData.append('tripId', tripId);
     await axios
       .post(`http://3.37.189.80/bookmark?tripId=${tripId}`, routeData, {
-        headers: { Authorization: `Bearer ${JWTToken}`, 'Content-Type': 'multipart/form-data' },
+        headers: { Authorization: token, 'Content-Type': 'multipart/form-data' },
       })
       .then(result => console.log(result));
   };
-  const fetchBookmarkCount = async tripId => {
+  const fetchBookmarkCount = async (token, tripId) => {
     let url = `http://3.37.189.80/bookmark/count`;
     const queryStr = `?tripId=${tripId}`;
     await axios
-      .get(url + queryStr, { headers: { Authorization: `Bearer ${JWTToken}` } })
+      .get(url + queryStr, { headers: { Authorization: token } })
       .then(result => setBookmarkCount(result.data.bookMarkCount));
   };
-  const fetchBookmarked = async tripId => {
+  const fetchBookmarked = async (token, tripId) => {
     let url = `http://3.37.189.80/bookmark/check`;
     const queryStr = `?tripId=${tripId}`;
     await axios
-      .get(url + queryStr, { headers: { Authorization: `Bearer ${JWTToken}` } })
+      .get(url + queryStr, { headers: { Authorization: token } })
       .then(result => setBookmarked(result.data.bookMark));
   };
-  const fetchTripInfo = async tripId => {
+  const fetchTripInfo = async (token, tripId) => {
     try {
       let url = `http://3.37.189.80/trip/${tripId}`;
-      const response = await axios.get(url, { headers: { Authorization: `Bearer ${JWTToken}` } });
+      const response = await axios.get(url, { headers: { Authorization: token } });
       const tripData = response.data;
       return tripData;
     } catch (error) {
@@ -152,10 +150,11 @@ const RoutePage = ({ route, navigation }) => {
   };
   useEffect(() => {
     let tripId = route.params.tripId;
-    fetchBookmarkCount(tripId);
-    fetchBookmarked(tripId);
-    fetchTripInfo(tripId).then(data => setData(data));
-    fetchFollowed(data.userId);
+    getToken().then(token => {
+      fetchBookmarkCount(token, tripId);
+      fetchBookmarked(token, tripId);
+      fetchTripInfo(token, tripId).then(data => setData(data));
+    });
   }, []);
   //console.log(data.locationInfo.map(item => console.log(item.place)));
   const goBack = () => {
