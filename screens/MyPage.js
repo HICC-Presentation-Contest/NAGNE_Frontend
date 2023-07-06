@@ -92,7 +92,7 @@ const TabContent = styled.View`
   width: 100%;
 `;
 
-const TravelSimpleInfo = styled.View`
+const TravelSimpleInfo = styled.TouchableOpacity`
   width: 353px;
   height: 124px;
   border: 1px;
@@ -165,6 +165,22 @@ const Map = styled.View`
   border-radius: 5px;
 `;
 
+const FollowButton = styled.TouchableOpacity`
+  height: 50%;
+  width: 72px;
+  height: 36px;
+  border: #747474;
+  color: black;
+  margin-right: 8px;
+  border-radius: 18px;
+  justify-content: center;
+  align-items: center;
+`;
+const FollowText = styled.Text`
+  color: black;
+  font-size: 12px;
+`;
+
 export default function MyPage({ navigation, route }) {
   const [activeTab, setActiveTab] = useState('Path');
   const [simplePost, setSimplePost] = useState(dummy.content);
@@ -174,8 +190,47 @@ export default function MyPage({ navigation, route }) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [bookmarkedPosts, setBookmarkedPosts] = useState({});
   const userId = route.params.userId;
+  const [follow, setFollow] = useState(false);
 
   const loggedInUserId = 7;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://3.37.189.80/follow/check?receiverId=${userId}
+        `,
+          {
+            headers: { Authorization: `Bearer ${JWTToken}` },
+          },
+        );
+        console.log(response.data);
+        setFollow(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [userId]);
+
+  const handleClick = async () => {
+    try {
+      const routeData = new FormData();
+      routeData.append('receiverId', userId);
+      // 백엔드에 북마크 상태 전송
+      const response = await axios.post(`http://3.37.189.80/follow?receiverId=${userId}`, routeData, {
+        headers: { Authorization: `Bearer ${JWTToken}`, 'Content-Type': 'multipart/form-data' },
+      });
+      // 응답이 정상적인 경우, 프론트엔드의 상태 업데이트
+      if (response.status === 200) {
+        setFollow(!follow);
+      } else {
+        throw new Error('Failed to update follow');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     // 현재 페이지의 사용자의 userId가 로그인한 사용자와 다른 경우 뒤로가기 버튼과 팔로우 버튼 표시
@@ -193,16 +248,9 @@ export default function MyPage({ navigation, route }) {
           </TouchableOpacity>
         ),
         headerRight: () => (
-          <TouchableOpacity
-            onPress={() => {
-              /* 팔로우 토글 로직 구현 */
-            }}
-          >
-            <Text style={{ marginRight: 10 }}>
-              {/* 팔로우 상태에 따라 텍스트 변경 */}
-              팔로우
-            </Text>
-          </TouchableOpacity>
+          <FollowButton style={follow && { backgroundColor: '#0351EA' }} onPress={handleClick}>
+            <FollowText style={follow && { color: 'white' }}>{follow ? '언팔로우' : '팔로우'}</FollowText>
+          </FollowButton>
         ),
       });
     } else {
@@ -213,7 +261,7 @@ export default function MyPage({ navigation, route }) {
       });
       console.log('조건문 2 실행');
     }
-  }, [userId, loggedInUserId]);
+  }, [userId, loggedInUserId, follow]);
 
   useEffect(() => {
     console.log('userId changed:', userId);
@@ -293,7 +341,7 @@ export default function MyPage({ navigation, route }) {
     };
 
     fetchData();
-  }, [userId]);
+  }, [userId, follow]);
 
   // 수정한 텍스트를 백엔드로 보내는 함수
   const sendTextToBackend = async text => {
@@ -316,7 +364,7 @@ export default function MyPage({ navigation, route }) {
 
   const renderItem = ({ item: post }) => {
     return (
-      <TravelSimpleInfo key={post.tripId}>
+      <TravelSimpleInfo key={post.tripId} onPress={() => navigation.push('RoutePage', { tripId: post.tripId })}>
         <Title>
           <Logo resizeMode="contain" source={require('../assets/navigation.png')} />
           <Text>{post.title}</Text>

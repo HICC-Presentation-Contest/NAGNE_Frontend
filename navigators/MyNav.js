@@ -5,6 +5,7 @@ import Follower from '../screens/Follower';
 import Following from '../screens/Following';
 import userInfo from '../dummy/userInfo.json';
 import { Image } from 'react-native';
+import RoutePage from '../screens/RoutePage';
 
 const Stack = createStackNavigator();
 const loggedInUserId = 7;
@@ -37,7 +38,7 @@ export default function MyNav() {
           headerBackImage: () => <Ionicons name="chevron-back" size={24} color="black" />,
         }}
         component={MyPage}
-        initialParams={{ userId: 7 }}
+        initialParams={{ userId: 3 }}
       />
       <Stack.Screen
         name="Follower"
@@ -52,6 +53,13 @@ export default function MyNav() {
           title: '팔로잉',
         }}
         component={Following}
+      />
+      <Stack.Screen
+        name="RoutePage"
+        options={{
+          headerShown: false,
+        }}
+        component={RoutePage}
       />
     </Stack.Navigator>
   );
