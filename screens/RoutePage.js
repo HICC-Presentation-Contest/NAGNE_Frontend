@@ -101,7 +101,7 @@ const RoutePage = ({ route, navigation }) => {
   let [bookmarked, setBookmarked] = useState(false);
   let [bookmarkCount, setBookmarkCount] = useState('');
   let JWTToken =
-    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODg0NjAwMzMsImV4cCI6MTY4OTA2NDgzMywic3ViIjoibmVvc2VsZjExMDVAZ21haWwuY29tIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.EUnyvx1Sk0MPgoOvihGjL_2U-srcR4wLQzOXGh2PMBaslrguB-uh7VQlBWoygUOXhYaVCqKr60yEuQjpglxmbg';
+    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODg1NDY2NTIsImV4cCI6MTY4OTE1MTQ1Miwic3ViIjoic2Vobzc4QGcuaG9uZ2lrLmFjLmtyIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.P81MwwK7CR5kyTa--S7KX5zqRPM3mWzGg_JQoi7dgWIBn5RtbXABde4MXizmY7lXkpOU6fvmKQFwpxot48kQog';
 
   const handleBookmarkPressed = async tripId => {
     setBookmarked(bookmarked => !bookmarked);
@@ -137,6 +137,16 @@ const RoutePage = ({ route, navigation }) => {
       console.error('Failed to fetch trip data:', error.response);
     }
   };
+  const fetchFollowed = async userId => {
+    try {
+      let url = `http://3.37.189.80/follow/check?receiverId=${userId}`;
+      const response = await axios.get(url, { headers: { Authorization: `Bearer ${JWTToken}` } });
+      console.log(response.data);
+      setFollow(response.data);
+    } catch (error) {
+      console.error('Failed to fetch follow data:', error.response);
+    }
+  };
   const toggleFollow = () => {
     setFollow(!follow);
   };
@@ -145,6 +155,7 @@ const RoutePage = ({ route, navigation }) => {
     fetchBookmarkCount(tripId);
     fetchBookmarked(tripId);
     fetchTripInfo(tripId).then(data => setData(data));
+    fetchFollowed(data.userId);
   }, []);
   //console.log(data.locationInfo.map(item => console.log(item.place)));
   const goBack = () => {
