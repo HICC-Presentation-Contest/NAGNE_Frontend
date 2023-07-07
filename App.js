@@ -17,17 +17,12 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const onFinish = () => setLoading(false);
   let [loggedIn, setLoggedIn] = useState(false);
-  const preload = async () => {
-    // console.log('AsyncStorage 내 토큰 유무:', token);
-    // if (token) {
-    //   console.log('로그인 절차 생략');
-    //   setLoggedIn(true);
-    // }
-  };
+  const preload = async () => {};
 
   if (loading) {
     return <AppLoading startAsync={preload} onError={console.warn} onFinish={onFinish} />;
   }
+
   const Login = () => {
     setLoggedIn(true);
   };

@@ -195,7 +195,7 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
   const selectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
+      quality: 0.1,
       allowsEditing: true,
       aspect: [10, 8],
     });

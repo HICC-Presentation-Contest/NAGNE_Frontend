@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Button, ButtonText, CreateRouteLayout } from '../components/CreateRoute_Shared';
 import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
@@ -6,19 +6,20 @@ import { styled } from 'styled-components/native';
 import MapView, { Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 import { View, Text } from 'react-native';
-import { getToken } from '../components/Shared';
-import { CommonActions } from '@react-navigation/native';
+import { Platform } from 'react-native';
+import { AuthContext } from '../components/AuthProvider';
 
 const MapContainer = styled.View`
   margin-top: 40px;
   elevation: 9;
-  background-color: black;
+  background-color: white;
   /* box-shadow: 24px 16px 16px black; */
   width: 300px;
   height: 400px;
 `;
 
 const CreateRoute_5 = ({ route, navigation }) => {
+  const { token, setToken } = useContext(AuthContext);
   const [mapSnapshot, setMapSnapshot] = useState(null);
   let url = 'http://3.37.189.80/trip';
   const uploadDatas = async (hashtag, title, region, locations, Thumbnail) => {
@@ -27,7 +28,6 @@ const CreateRoute_5 = ({ route, navigation }) => {
       routeData.append('address', region);
       routeData.append('title', title);
       routeData.append('tag[0].name', hashtag);
-      console.log(Thumbnail);
       const fileType = Thumbnail.split('.').pop();
       const newThumbFileName = `${FileSystem.documentDirectory}tripImage.${fileType}`;
       await FileSystem.copyAsync({ from: Thumbnail, to: newThumbFileName }).then(
@@ -57,14 +57,14 @@ const CreateRoute_5 = ({ route, navigation }) => {
     };
 
     try {
-      getToken().then(token => {
-        processData().then(formData => {
-          axios
-            .post(url, formData, {
-              headers: { Authorization: token, 'Content-Type': 'multipart/form-data' },
-            })
-            .then(response => console.log('response for createRoute', response.config.data));
-        });
+      console.log('Token:', token);
+      await processData().then(formData => {
+        console.log(formData);
+        axios
+          .post(url, formData, {
+            headers: { Authorization: token, 'Content-Type': 'multipart/form-data' },
+          })
+          .then(response => console.log('response for createRoute', response.config.data));
       });
     } catch (error) {
       console.error('Error:', error);
@@ -76,8 +76,12 @@ const CreateRoute_5 = ({ route, navigation }) => {
         format: 'jpg',
         quality: 0.8,
       });
-      setMapSnapshot(result);
-      return result;
+      if (Platform.OS == 'ios') {
+        let newResult = 'file://' + result;
+        return newResult;
+      } else {
+        return result;
+      }
     } catch (error) {
       console.error('Error taking map snapshot:', error);
     }
@@ -97,7 +101,6 @@ const CreateRoute_5 = ({ route, navigation }) => {
       });
     }
   };
-
   useEffect(() => {
     let title = route.params.title;
     let region = route.params.region;
@@ -107,6 +110,7 @@ const CreateRoute_5 = ({ route, navigation }) => {
       takeSnapshot().then(result => uploadDatas(hashtag, title, region.name, locations, result));
     }, 2000);
   }, []);
+
   const mapRef = useRef(null);
   const goBackHome = () => {
     navigation.reset({ routes: [{ name: 'Home' }] });
