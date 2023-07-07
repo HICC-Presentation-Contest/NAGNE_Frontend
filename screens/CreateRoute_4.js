@@ -41,7 +41,7 @@ const CreateRoute_4 = ({ route, navigation }) => {
         />
       </Container>
       <Button onPress={() => navigateTo5()}>
-        <ButtonText>{hashtag ? '등록' : '해시태그 없이 등록'}</ButtonText>
+        <ButtonText>{hashtag ? '작성완료' : '해시태그 없이 작성완료'}</ButtonText>
       </Button>
     </CreateRouteLayout>
   );

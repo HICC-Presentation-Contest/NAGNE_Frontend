@@ -53,7 +53,6 @@ export default function LoggedInNav() {
           <Stack.Navigator
             screenOptions={{
               headerShown: true,
-              headerBackImageSource: leftArrow,
               headerTitleAlign: 'center',
               headerBackTitleVisible: false,
               headerTitleStyle: {

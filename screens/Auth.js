@@ -1,14 +1,17 @@
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, ButtonText } from '../components/CreateRoute_Shared';
 import axios from 'axios';
 import { saveToken } from '../PrivateConfig';
-import { getToken } from '../components/Shared';
+import { getToken, iOSBoxShadow } from '../components/Shared';
 import { useContext } from 'react';
 import { AuthContext } from '../components/AuthProvider';
+import styled from 'styled-components/native';
+import { colors } from '../colors';
+import loginImage from '../assets/images/google.png';
 
 WebBrowser.maybeCompleteAuthSession();
 const addToken = async (code, setToken) => {
@@ -20,6 +23,50 @@ const addToken = async (code, setToken) => {
     console.log('useContext의 setToken 실행되었음', response.data.accessToken);
   });
 };
+
+const Container = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  padding: 0px 20px;
+`;
+const LOGOText = styled.Text`
+  font-size: 50px;
+  font-weight: bold;
+  color: ${colors.highlight};
+  margin-bottom: 40px;
+  margin-top: -80px;
+`;
+const GoogleImg = styled.Image`
+  width: 24px;
+  height: 24px;
+  margin-right: 50px;
+`;
+const HelloText = styled.Text`
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 10px;
+`;
+const WelcomeText = styled.Text`
+  font-size: 16px;
+  margin-top: 10;
+`;
+const LoginButton = styled.TouchableOpacity`
+  background-color: #f7f7f7;
+  padding: 10px 20px;
+  border-radius: 20px;
+  margin-top: 130px;
+  flex-direction: row;
+  align-items: center;
+  border: ${StyleSheet.hairlineWidth}px #d7d7d7 solid;
+  ${iOSBoxShadow}
+`;
+const LoginText = styled.Text`
+  font-size: 16px;
+  color: black;
+  margin-right: 50px;
+`;
 
 const Auth = ({ parentFunction }) => {
   const { token, setToken } = useContext(AuthContext);
@@ -34,48 +81,22 @@ const Auth = ({ parentFunction }) => {
       )}&response_type=token&scope=email%20profile%20openid`,
     });
     if (response?.type === 'success') {
-      // if (!token) {
-      //   console.log('새로운 토큰 발급');
       addToken(response.params.access_token, setToken).then(parentFunction());
-      // } else {
-      //   console.log('user에 대한 토큰 저장되어있음, 토큰발급절차 생략', response.params.access_token);
-      //   parentFunction();
-      // }
     } else {
       console.error('로그인 오류');
     }
   };
 
-  // const fetchAccessToken = async code => {
-  //   console.log(code, webClientId, redirectUri, CLIENT_SECRET);
-  //   const tokenEndpoint = 'https://www.googleapis.com/oauth2/v4/token';
-  //   const body = {
-  //     code: code,
-  //     client_id: webClientId,
-  //     client_secret: CLIENT_SECRET, //문제없
-  //     // grant_type='authorization_code'
-  //   };
-
-  //   try {
-  //     const response = await axios.post(tokenEndpoint, new URLSearchParams(body), {
-  //       headers: {
-  //         'Content-Type': 'application/x-www-form-urlencoded',
-  //       },
-  //     });
-
-  //     const { data } = response;
-  //     console.log('토큰:', data.access_token);
-  //     return data.access_token;
-  //   } catch (error) {
-  //     console.error('Error fetching access token:', error);
-  //   }
-  // };
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Button onPress={handleLogin}>
-        <ButtonText>Sign in with Google</ButtonText>
-      </Button>
-    </View>
+    <Container>
+      <LOGOText>OpenRoute</LOGOText>
+      <HelloText>안녕하세요!</HelloText>
+      <WelcomeText>OR에 오신 걸 환영합니다</WelcomeText>
+      <LoginButton onPress={handleLogin}>
+        <GoogleImg source={loginImage}></GoogleImg>
+        <LoginText>구글로 로그인</LoginText>
+      </LoginButton>
+    </Container>
   );
 };
 

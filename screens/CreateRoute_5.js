@@ -9,10 +9,12 @@ import { View, Text } from 'react-native';
 import { Platform } from 'react-native';
 import { AuthContext } from '../components/AuthProvider';
 import { colors } from '../colors';
+import { iOSBoxShadow } from '../components/Shared';
 
 const MapContainer = styled.View`
   margin-top: 40px;
   elevation: 9;
+  ${iOSBoxShadow};
   background-color: white;
   width: 300px;
   height: 400px;

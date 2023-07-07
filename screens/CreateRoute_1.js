@@ -1,19 +1,9 @@
-import React from 'react';
-import {
-  Button,
-  ButtonText,
-  Input,
-  Container,
-  CreateRouteLayout,
-  Title,
-  CreateRouteHeader,
-} from '../components/CreateRoute_Shared';
-import { useForm } from 'react-hook-form';
+import React, { useState } from 'react';
+import { Button, ButtonText, Input, Container, CreateRouteLayout, Title } from '../components/CreateRoute_Shared';
 
 const CreateRoute_1 = ({ navigation }) => {
-  const { register, handleSubmit, setValue, getValues } = useForm();
+  const [title, setTitle] = useState('');
   const navigateTo2 = () => {
-    const { title } = getValues();
     navigation.navigate('CreateRoute_2', {
       title,
     });
@@ -32,11 +22,15 @@ const CreateRoute_1 = ({ navigation }) => {
             returnKeyType="next"
             blurOnSubmit={false}
             style={{ marginTop: 16 }}
-            onChangeText={text => setValue('title', text)}
+            onChangeText={text => setTitle(text)}
           />
         </Container>
-        <Button onPress={() => navigateTo2()}>
-          <ButtonText>다음</ButtonText>
+        <Button
+          disabled={title ? false : true}
+          style={title ? { backgroundColor: '#0351EA' } : { backgroundColor: '#f3f3f3' }}
+          onPress={() => navigateTo2()}
+        >
+          <ButtonText style={title ? { color: 'white' } : { color: '#747474' }}>다음</ButtonText>
         </Button>
       </CreateRouteLayout>
     </>
