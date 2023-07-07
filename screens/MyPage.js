@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, Image, Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import axios from 'axios';
 import bookmarkedIcon from '../assets/bookmarked.png';
 import nonBookmarkedIcon from '../assets/non-bookmarked.png';
 import { Ionicons } from '@expo/vector-icons';
+import { AuthContext } from '../components/AuthProvider';
 
 const Container = styled.View`
   flex: 1;
@@ -187,15 +188,41 @@ export default function MyPage({ navigation, route }) {
   const [bio, setBio] = useState();
   const [isEditMode, setIsEditMode] = useState(false);
   const [bookmarkedPosts, setBookmarkedPosts] = useState({});
-  const userId = route.params.userId;
+  const [userId, setUserId] = useState(route.params.userId);
   const [follow, setFollow] = useState(false);
+  const [loggedInUserId, setLoggedInUserId] = useState(7);
+
+  const { token, setToken } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (route && route.params && route.params.userId) {
+      // route.params.userId가 존재하는 경우
+      console.log(route, '라우터 생성');
+      setUserId(route.params.userId);
+    } else {
+      // route.params.userId가 존재하지 않는 경우
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(`http://3.37.189.80/user`, {
+            headers: { Authorization: token },
+          });
+          console.log(response.data);
+          setUserId(response.data.userId);
+          setLoggedInUserId(response.data.userId);
+        } catch (error) {
+          console.error(error); // Error handling
+        }
+      };
+      fetchData();
+    }
+  }, [route]);
 
   //유저 페이지 정보 조회
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://3.37.189.80/user?userId=${userId}`, {
-          headers: { Authorization: `Bearer ${JWTToken}` },
+          headers: { Authorization: token },
         });
         console.log('유저 페이지 정보 조회', response.data);
         setUserInfo(response.data);
@@ -216,8 +243,6 @@ export default function MyPage({ navigation, route }) {
     console.log('받아온 유저 id', userId);
   }, []);
 
-  const loggedInUserId = 7;
-
   // 팔로우 상태 get
   useEffect(() => {
     const fetchData = async () => {
@@ -226,7 +251,7 @@ export default function MyPage({ navigation, route }) {
           `http://3.37.189.80/follow/check?receiverId=${userId}
         `,
           {
-            headers: { Authorization: `Bearer ${JWTToken}` },
+            headers: { Authorization: token },
           },
         );
         console.log(response.data);
@@ -244,7 +269,7 @@ export default function MyPage({ navigation, route }) {
       routeData.append('receiverId', userId);
       // 백엔드에 북마크 상태 전송
       const response = await axios.post(`http://3.37.189.80/follow?receiverId=${userId}`, routeData, {
-        headers: { Authorization: `Bearer ${JWTToken}`, 'Content-Type': 'multipart/form-data' },
+        headers: { Authorization: token, 'Content-Type': 'multipart/form-data' },
       });
       // 응답이 정상적인 경우, 프론트엔드의 상태 업데이트
       if (response.status === 200) {
@@ -296,15 +321,12 @@ export default function MyPage({ navigation, route }) {
     setActiveTab(tabName);
   };
 
-  let JWTToken =
-    'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODg1NDY2NTIsImV4cCI6MTY4OTE1MTQ1Miwic3ViIjoic2Vobzc4QGcuaG9uZ2lrLmFjLmtyIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.P81MwwK7CR5kyTa--S7KX5zqRPM3mWzGg_JQoi7dgWIBn5RtbXABde4MXizmY7lXkpOU6fvmKQFwpxot48kQog';
-
   //여행 간단 정보 조회
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://3.37.189.80/trip/user/${userId}/simple?page=0&size=10`, {
-          headers: { Authorization: `Bearer ${JWTToken}` },
+        const response = await axios.get(`http://3.37.189.80/trip/user/${userId}/simple?page=0&size=100`, {
+          headers: { Authorization: token },
         });
         console.log(response.data); // Server response data
 
@@ -321,8 +343,8 @@ export default function MyPage({ navigation, route }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://3.37.189.80/trip/user/${userId}?page=0&size=10`, {
-          headers: { Authorization: `Bearer ${JWTToken}` },
+        const response = await axios.get(`http://3.37.189.80/trip/user/${userId}?page=0&size=100`, {
+          headers: { Authorization: token },
         });
         console.log('성공'); // Server response data
         console.log(response.data); // Server response data
@@ -380,16 +402,13 @@ export default function MyPage({ navigation, route }) {
 
   const renderItem2 = ({ item: post }) => {
     // 현재 포스트의 북마크 상태를 가져옵니다.
-    const isBookmarked = bookmarkedPosts[post.tripId];
-
     const handleBookmarkPress = async myTripId => {
-      //현재 백이랑 통신이 안되는 상태 추후 수정 예정
       try {
         const routeData = new FormData();
         routeData.append('tripId', myTripId);
         // 백엔드에 북마크 상태 전송
         const response = await axios.post(`http://3.37.189.80/bookmark?tripId=${myTripId}`, routeData, {
-          headers: { Authorization: `Bearer ${JWTToken}`, 'Content-Type': 'multipart/form-data' },
+          headers: { Authorization: token, 'Content-Type': 'multipart/form-data' },
         });
         console.log('북마크 생성 성공');
         console.log(myTripId);
@@ -408,7 +427,6 @@ export default function MyPage({ navigation, route }) {
         alert('북마크 업데이트에 실패했습니다. 다시 시도해 주세요.');
       }
     };
-
     return (
       <Map key={post.tripId} onPress={() => navigation.push('RoutePage', { tripId: post.tripId })}>
         <Image
