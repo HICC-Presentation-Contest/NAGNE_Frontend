@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import dummy from '../dummy/follow.json';
 import { FlatList, Image, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { getToken } from '../components/Shared';
@@ -50,27 +49,34 @@ export default function Follower({ navigation, route }) {
   const [originalList, setOriginalList] = useState(''); // 원래의 목록을 저장하는 상태 추가
   const userId = route.params.userId;
 
+  const fetchData = async () => {
+    try {
+      getToken().then(token => {
+        axios
+          .get(`http://3.37.189.80/follow/following/${userId}?page=0&size=100`, {
+            headers: { Authorization: token },
+          })
+          .then(response => {
+            console.log('팔로잉 데이터 get 반응값:', response.data);
+            setUserList(response.data.content);
+            setOriginalList(response.data.content); // 원래의 목록 저장
+          });
+      });
+      // Perform necessary actions with the response data
+    } catch (error) {
+      console.error(error); // Error handling
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        getToken().then(token => {
-          axios
-            .get(`http://3.37.189.80/follow/following/${userId}?page=0&size=100`, {
-              headers: { Authorization: token },
-            })
-            .then(response => {
-              console.log('팔로잉 데이터 get 반응값:', response.data);
-              setUserList(response.data.content);
-              setOriginalList(response.data.content); // 원래의 목록 저장
-            });
-        });
-        // Perform necessary actions with the response data
-      } catch (error) {
-        console.error(error); // Error handling
-      }
-    };
     fetchData();
-  }, [userId]);
+    // navigation.addListener를 사용하여 화면으로 돌아왔을 때 데이터를 다시 가져오도록 설정합니다.
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData();
+    });
+    // 언마운트될 때 리스너를 정리합니다.
+    return unsubscribe;
+  }, [userId, navigation]);
 
   const performSearch = query => {
     const filteredList = originalList.filter(info => info.name.toLowerCase().includes(query.toLowerCase()));

@@ -10,52 +10,8 @@ import { getToken } from '../components/Shared';
 import axios from 'axios';
 
 const Stack = createStackNavigator();
-const loggedInUserId = 7;
 
 export default function MyNav() {
-  // const [userId, setUserId] = useState();
-
-  // const fetchUserInfo = async token => {
-  //   try {
-  //     let url = `http://3.37.189.80/user`;
-  //     const response = await axios.get(url, { headers: { Authorization: token } });
-
-  //     console.log(response.data);
-  //     setUserId(response.data.userId);
-  //   } catch (error) {
-  //     console.log('유저정보 가져오기');
-
-  //     console.error('Failed to fetch info data:', error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getToken().then(token => {
-  //     console.log(token);
-  //     fetchUserInfo(token);
-  //   });
-  // }, []);
-  // console.log('유저 Id :', userId);
-
-  // useEffect(() => {
-  //   getToken().then(token => {
-  //     const fetchData = async () => {
-  //       try {
-  //         const response = await axios.get(`http://3.37.189.80/user`, {
-  //           headers: { Authorization: token },
-  //         });
-  //         console.log(response.data);
-  //         setUserId(response.data.userId);
-
-  //         // Perform necessary actions with the response data
-  //       } catch (error) {
-  //         console.error(error); // Error handling
-  //       }
-  //     };
-  //     fetchData();
-  //   });
-  // }, []);
-
   return (
     <Stack.Navigator
       screenOptions={{
