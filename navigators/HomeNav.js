@@ -7,6 +7,7 @@ import MyPage from '../screens/MyPage';
 import Follower from '../screens/Follower';
 import Following from '../screens/Following';
 
+
 const Stack = createStackNavigator();
 
 export default function HomeNav() {
