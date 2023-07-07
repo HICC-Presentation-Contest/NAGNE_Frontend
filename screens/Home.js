@@ -114,7 +114,6 @@ const Home = ({ navigation }) => {
         }
       }
     }
-
     return null;
   }
   const navigateToRoutePage = tripId => {
@@ -136,14 +135,13 @@ const Home = ({ navigation }) => {
         const longitude = 126;
         const pageable = { page: 0, size: 20 };
         console.log('현재 사용자 위치:', latitude, longitude, token);
-        fetchMyLocationData(JSON.parse(token), longitude, latitude, pageable).then(data => setMyLocationData(data));
-        fetchPopularData(JSON.parse(token), longitude, latitude, pageable).then(data => setPopularData(data));
+        fetchMyLocationData(token, longitude, latitude, pageable).then(data => setMyLocationData(data));
+        fetchPopularData(token, longitude, latitude, pageable).then(data => setPopularData(data));
         getDistrictFromCoordinates(location.coords.latitude, location.coords.longitude).then(district => {
           console.log('district:', district);
           setLocation(district);
         });
       });
-      // });
     })();
   }, [token]);
   return (
