@@ -9,7 +9,9 @@ import * as Location from 'expo-location';
 import { WithLocalSvg } from 'react-native-svg';
 import LocationIcon from '../assets/images/location.svg';
 import { API_KEY } from '../PrivateConfig';
-import { AuthContext } from '../components/AuthProvider';
+
+import { AuthContext } from '../components/AuthProvider'; //**
+
 import Back from '../assets/appBack.jpg';
 import { Image } from 'react-native';
 
@@ -129,10 +131,10 @@ const Home = ({ navigation }) => {
       //토큰 받고 난후, 바로 위치정보값을 가져옴
       await Location.getCurrentPositionAsync({}).then(location => {
         //토큰과 위치정보값을 사용하여 나머지 정보들을 가져옴
-        // const latitude = location.coords.latitude;
-        // const longitude = -location.coords.longitude;
-        const latitude = 37;
-        const longitude = 126;
+        const latitude = location.coords.latitude;
+        const longitude = -location.coords.longitude;
+        // const latitude = 37;
+        // const longitude = 126;
         const pageable = { page: 0, size: 20 };
         console.log('현재 사용자 위치:', latitude, longitude, token);
         fetchMyLocationData(token, longitude, latitude, pageable).then(data => setMyLocationData(data));

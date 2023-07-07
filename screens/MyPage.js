@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, Image, Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import axios from 'axios';
-import dummy from '../dummy/travelSimpleInfo.json';
-import dUserInfo from '../dummy/userInfo.json';
 import bookmarkedIcon from '../assets/bookmarked.png';
 import nonBookmarkedIcon from '../assets/non-bookmarked.png';
 import { Ionicons } from '@expo/vector-icons';
@@ -183,16 +181,43 @@ const FollowText = styled.Text`
 
 export default function MyPage({ navigation, route }) {
   const [activeTab, setActiveTab] = useState('Path');
-  const [simplePost, setSimplePost] = useState(dummy.content);
+  const [simplePost, setSimplePost] = useState();
   const [post, setPost] = useState();
-  const [userInfo, setUserInfo] = useState(dUserInfo);
-  const [bio, setBio] = useState(userInfo.description);
+  const [userInfo, setUserInfo] = useState('');
+  const [bio, setBio] = useState();
   const [isEditMode, setIsEditMode] = useState(false);
   const [bookmarkedPosts, setBookmarkedPosts] = useState({});
   const userId = route.params.userId;
   const [follow, setFollow] = useState(false);
 
+  //유저 페이지 정보 조회
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://3.37.189.80/user?userId=${userId}`, {
+          headers: { Authorization: `Bearer ${JWTToken}` },
+        });
+        console.log('유저 페이지 정보 조회', response.data);
+        setUserInfo(response.data);
+        setBio(response.data.description);
+        navigation.setOptions({
+          title: response.data.name, // userId에 해당하는 사용자의 이름으로 헤더 타이틀을 설정
+        });
+        // Perform necessary actions with the response data
+      } catch (error) {
+        console.error(error); // Error handling
+      }
+    };
+
+    fetchData();
+  }, [userId, follow]);
+
+  useEffect(() => {
+    console.log('받아온 유저 id', userId);
+  }, []);
+
   const loggedInUserId = 7;
+
   // 팔로우 상태 get
   useEffect(() => {
     const fetchData = async () => {
@@ -267,16 +292,6 @@ export default function MyPage({ navigation, route }) {
     console.log('userId changed:', userId);
   }, [userId]);
 
-  useEffect(() => {
-    const posts = dummy.content || [];
-    setSimplePost(posts);
-  }, [dummy.content]);
-
-  useEffect(() => {
-    const info = dUserInfo || [];
-    setUserInfo(info);
-  }, [dUserInfo]);
-
   const handleTabPress = tabName => {
     setActiveTab(tabName);
   };
@@ -320,28 +335,6 @@ export default function MyPage({ navigation, route }) {
     };
     fetchData();
   }, [userId, bookmarkedPosts]);
-
-  //유저 페이지 정보 조회
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://3.37.189.80/user?userId=${userId}`, {
-          headers: { Authorization: `Bearer ${JWTToken}` },
-        });
-
-        setUserInfo(response.data);
-        setBio(response.data.description);
-        navigation.setOptions({
-          title: response.data.name, // userId에 해당하는 사용자의 이름으로 헤더 타이틀을 설정
-        });
-        // Perform necessary actions with the response data
-      } catch (error) {
-        console.error(error); // Error handling
-      }
-    };
-
-    fetchData();
-  }, [userId, follow]);
 
   // 수정한 텍스트를 백엔드로 보내는 함수
   const sendTextToBackend = async text => {
