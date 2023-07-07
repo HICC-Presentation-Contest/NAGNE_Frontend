@@ -183,10 +183,20 @@ const RoutePage = ({ route, navigation }) => {
   const goBack = () => {
     navigation.goBack();
   };
+
+  const goProfile = () => {
+    navigation.push('MyPage', { userId: userId });
+  };
   return (
     <>
       <ScreenLayout>
-        <RoutePageHeader onPressBack={goBack} userId={data.username} followed={follow} onPress={toggleFollow} />
+        <RoutePageHeader
+          onPressName={goProfile}
+          onPressBack={goBack}
+          userId={data.username}
+          followed={follow}
+          onPress={toggleFollow}
+        />
         <LocationText>서울시 {data.address}</LocationText>
         <PlaceListContainer>
           <HorizontalLine />

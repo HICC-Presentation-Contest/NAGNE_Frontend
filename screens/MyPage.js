@@ -307,7 +307,13 @@ export default function MyPage({ navigation, route }) {
       // 일치하는 경우 뒤로가기 버튼을 제거하고 팔로우 버튼도 제거
       navigation.setOptions({
         headerLeft: () => null,
-        headerRight: () => null,
+        headerRight: () => (
+          <Image
+            source={require('../assets/alarm.png')}
+            style={{ width: 24, height: 24, marginRight: 22 }}
+            resizeMode="contain"
+          />
+        ),
       });
       console.log('조건문 2 실행');
     }

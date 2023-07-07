@@ -68,19 +68,10 @@ export default function MyNav() {
       <Stack.Screen
         name="MyPage"
         options={{
-          headerShown: true,
           headerBackVisible: false,
-          title: userInfo.name,
+          title: '',
           headerTitleAlign: 'left',
           headerLeft: null,
-          headerRight: () => (
-            <Image
-              source={require('../assets/alarm.png')}
-              style={{ width: 24, height: 24, marginRight: 15 }}
-              resizeMode="contain"
-            />
-          ),
-          headerBackImage: () => <Ionicons name="chevron-back" size={24} color="black" />,
         }}
         component={MyPage}
       />
