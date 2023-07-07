@@ -20,12 +20,7 @@ const CreateRoute_4 = ({ route, navigation }) => {
   let region = route.params.region;
   let locations = route.params.locations;
   const navigateTo5 = () => {
-    navigation.navigate('CreateRoute_5', {
-      title,
-      region,
-      locations,
-      hashtag,
-    });
+    navigation.reset({ routes: [{ name: 'CreateRoute_5', params: { title, region, locations, hashtag } }] });
   };
 
   return (

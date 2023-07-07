@@ -51,10 +51,10 @@ export default MapThumbnails = ({ ...props }) => {
     props.parentFunction(tripId);
   };
   const renderItem = ({ item, index }) => {
-    const inputRange = [-1, 0, CardWidth * index, CardWidth * (index + 4)];
+    const inputRange = [-1, 0, CardWidth * index, CardWidth * (index + 5)];
     const scale = scrollX.interpolate({
       inputRange,
-      outputRange: [1, 0.98, 1, 0],
+      outputRange: [1, 1, 1, 0.5],
     });
     return (
       <Animated.View
