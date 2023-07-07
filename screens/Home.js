@@ -95,28 +95,29 @@ const Home = ({ navigation }) => {
   };
 
   async function getDistrictFromCoordinates(lat, lng) {
-    const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY}&language=ko`,
-    );
-    let city = null;
-    let district = null;
-
-    if (response.data.status === 'OK') {
-      for (const result of response.data.results) {
-        for (const ac of result.address_components) {
-          if (ac.types.includes('administrative_area_level_1')) {
-            city = ac.long_name;
-          }
-          if (ac.types.includes('political') && ac.types.includes('sublocality')) {
-            district = ac.long_name;
-          }
-          if (city && district) {
-            return `${city} ${district}`;
+    await axios
+      .get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY}&language=ko`)
+      .then(response => {
+        let city = null;
+        let district = null;
+        console.log(response);
+        if (response.data.status === 'OK') {
+          for (const result of response.data.results) {
+            for (const ac of result.address_components) {
+              if (ac.types.includes('administrative_area_level_1')) {
+                city = ac.long_name;
+              }
+              if (ac.types.includes('political') && ac.types.includes('sublocality')) {
+                district = ac.long_name;
+              }
+              if (city && district) {
+                return `${city} ${district}`;
+              }
+            }
           }
         }
-      }
-    }
-    return null;
+      })
+      .then(result => console.log('result', result));
   }
   const navigateToRoutePage = tripId => {
     navigation.navigate('RoutePage', { tripId });
@@ -131,18 +132,20 @@ const Home = ({ navigation }) => {
       //토큰 받고 난후, 바로 위치정보값을 가져옴
       await Location.getCurrentPositionAsync({}).then(location => {
         //토큰과 위치정보값을 사용하여 나머지 정보들을 가져옴
+<<<<<<< HEAD
         const latitude = location.coords.latitude;
         const longitude = -location.coords.longitude;
         // const latitude = 37;
         // const longitude = 126;
+=======
+        const latitude = parseInt(location.coords.latitude);
+        const longitude = parseInt(-location.coords.longitude);
+>>>>>>> 2992b1e (homeAddressFix)
         const pageable = { page: 0, size: 20 };
         console.log('현재 사용자 위치:', latitude, longitude, token);
         fetchMyLocationData(token, longitude, latitude, pageable).then(data => setMyLocationData(data));
         fetchPopularData(token, longitude, latitude, pageable).then(data => setPopularData(data));
-        getDistrictFromCoordinates(location.coords.latitude, location.coords.longitude).then(district => {
-          console.log('district:', district);
-          setLocation(district);
-        });
+        getDistrictFromCoordinates(location.coords.latitude, location.coords.longitude);
       });
     })();
   }, [token]);
@@ -167,7 +170,8 @@ const Home = ({ navigation }) => {
         </UpperBase>
         <LocationContainer>
           <WithLocalSvg style={{ color: '#0351ea' }} width={22} height={22} asset={LocationIcon} />
-          <LocationText>{location}</LocationText>
+          {/* <LocationText>{location}</LocationText> */}
+          <LocationText>서울특별시 마포구</LocationText>
         </LocationContainer>
       </ScreenLayout>
     </>
