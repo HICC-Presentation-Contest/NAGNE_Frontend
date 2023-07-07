@@ -103,7 +103,8 @@ const RoutePage = ({ route, navigation }) => {
   let [bookmarked, setBookmarked] = useState(false);
   let [bookmarkCount, setBookmarkCount] = useState('');
   const { token, setToken } = useContext(AuthContext);
-  const myToken = JSON.parse(token);
+  // const myToken = JSON.parse(token);
+  const myToken = token;
   const [userId, setUserId] = useState('');
   const handleBookmarkPressed = async tripId => {
     setBookmarked(bookmarked => !bookmarked);

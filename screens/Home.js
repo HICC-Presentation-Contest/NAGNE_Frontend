@@ -132,15 +132,8 @@ const Home = ({ navigation }) => {
       //토큰 받고 난후, 바로 위치정보값을 가져옴
       await Location.getCurrentPositionAsync({}).then(location => {
         //토큰과 위치정보값을 사용하여 나머지 정보들을 가져옴
-<<<<<<< HEAD
-        const latitude = location.coords.latitude;
-        const longitude = -location.coords.longitude;
-        // const latitude = 37;
-        // const longitude = 126;
-=======
         const latitude = parseInt(location.coords.latitude);
         const longitude = parseInt(-location.coords.longitude);
->>>>>>> 2992b1e (homeAddressFix)
         const pageable = { page: 0, size: 20 };
         console.log('현재 사용자 위치:', latitude, longitude, token);
         fetchMyLocationData(token, longitude, latitude, pageable).then(data => setMyLocationData(data));
