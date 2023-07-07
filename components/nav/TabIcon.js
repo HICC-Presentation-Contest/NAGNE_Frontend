@@ -1,13 +1,20 @@
 import React from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import Home from '../../assets/images/home.svg';
+import add from '../../assets/images/add.svg';
+import user from '../../assets/images/user.svg';
+import folder from '../../assets/images/folder.svg';
+import { WithLocalSvg } from 'react-native-svg';
+import { View } from 'react-native';
 
-
-export default function TabIcon({ iconName, color, focused }) {
+export default function TabIcon({ iconName }) {
   return (
-    <Ionicons
-      name={iconName}
-      color={color}
-      size={22}
-    />
+    <View style={{ backgroundColor: 'chartreuse' }}>
+      <WithLocalSvg
+        // style={focused ? { color: '#0351ea' } : { color: '#747474' }}
+        width={24}
+        height={24}
+        asset={iconName == 'Home' && Home}
+      />
+    </View>
   );
 }

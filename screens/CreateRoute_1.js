@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Blank24px,
   Button,
   ButtonText,
   Input,
@@ -25,7 +24,6 @@ const CreateRoute_1 = ({ navigation }) => {
       <CreateRouteLayout>
         <Container style={{ marginTop: '50%' }}>
           <Title>여정의 이름을 알려주세요</Title>
-          <Blank24px />
           <Input
             placeholderTextColor="#84ADFF"
             autoFocus
@@ -33,6 +31,7 @@ const CreateRoute_1 = ({ navigation }) => {
             placeholder="제목 입력"
             returnKeyType="next"
             blurOnSubmit={false}
+            style={{ marginTop: 16 }}
             onChangeText={text => setValue('title', text)}
           />
         </Container>

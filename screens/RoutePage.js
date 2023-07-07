@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { styled } from 'styled-components/native';
 import { getToken, ScreenHeight, ScreenWidth } from '../components/Shared';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import { WithLocalSvg } from 'react-native-svg';
 import PathList from '../components/PathList';
 import Bookmark from '../assets/images/bookmark_Active.svg';
 import { Platform } from 'react-native';
+import { AuthContext } from '../components/AuthProvider';
 
 let diagramRadius = 40;
 const ScreenLayout = styled.SafeAreaView`
@@ -101,62 +102,80 @@ const RoutePage = ({ route, navigation }) => {
   let [follow, setFollow] = useState(false);
   let [bookmarked, setBookmarked] = useState(false);
   let [bookmarkCount, setBookmarkCount] = useState('');
-  const handleBookmarkPressed = async (token, tripId) => {
+  const { token, setToken } = useContext(AuthContext);
+  const myToken = JSON.parse(token);
+  const [userId, setUserId] = useState('');
+  const handleBookmarkPressed = async tripId => {
     setBookmarked(bookmarked => !bookmarked);
     const routeData = new FormData();
     routeData.append('tripId', tripId);
     await axios
       .post(`http://3.37.189.80/bookmark?tripId=${tripId}`, routeData, {
-        headers: { Authorization: token, 'Content-Type': 'multipart/form-data' },
+        headers: { Authorization: myToken, 'Content-Type': 'multipart/form-data' },
       })
       .then(result => console.log(result));
   };
-  const fetchBookmarkCount = async (token, tripId) => {
+  const fetchBookmarkCount = async tripId => {
     let url = `http://3.37.189.80/bookmark/count`;
     const queryStr = `?tripId=${tripId}`;
     await axios
-      .get(url + queryStr, { headers: { Authorization: token } })
+      .get(url + queryStr, { headers: { Authorization: myToken } })
       .then(result => setBookmarkCount(result.data.bookMarkCount));
   };
-  const fetchBookmarked = async (token, tripId) => {
+  const fetchBookmarked = async tripId => {
     let url = `http://3.37.189.80/bookmark/check`;
     const queryStr = `?tripId=${tripId}`;
     await axios
-      .get(url + queryStr, { headers: { Authorization: token } })
+      .get(url + queryStr, { headers: { Authorization: myToken } })
       .then(result => setBookmarked(result.data.bookMark));
   };
-  const fetchTripInfo = async (token, tripId) => {
+  const fetchTripInfo = async tripId => {
     try {
       let url = `http://3.37.189.80/trip/${tripId}`;
-      const response = await axios.get(url, { headers: { Authorization: token } });
+      const response = await axios.get(url, { headers: { Authorization: myToken } });
       const tripData = response.data;
+      setUserId(tripData.userId);
       return tripData;
     } catch (error) {
       console.error('Failed to fetch trip data:', error.response);
     }
   };
-  const fetchFollowed = async (token, userId) => {
+  const fetchFollowed = async () => {
     try {
       let url = `http://3.37.189.80/follow/check?receiverId=${userId}`;
-      const response = await axios.get(url, { headers: { Authorization: token } });
+      const response = await axios.get(url, { headers: { Authorization: myToken } });
       console.log('팔로우 상태', response.data);
       setFollow(response.data);
     } catch (error) {
-      console.error('Failed to fetch follow data:', error.response);
+      console.error('Failed to fetch follow data:', error);
     }
   };
-  const toggleFollow = () => {
-    setFollow(!follow);
+  const toggleFollow = async () => {
+    try {
+      const routeData = new FormData();
+      routeData.append('receiverId', userId);
+      // 백엔드에 북마크 상태 전송
+      const response = await axios.post(`http://3.37.189.80/follow?receiverId=${userId}`, routeData, {
+        headers: { Authorization: myToken, 'Content-Type': 'multipart/form-data' },
+      });
+      // 응답이 정상적인 경우, 프론트엔드의 상태 업데이트
+      if (response.status === 200) {
+        setFollow(!follow);
+      } else {
+        throw new Error('Failed to update follow');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
     let tripId = route.params.tripId;
-    getToken().then(token => {
-      fetchBookmarkCount(token, tripId);
-      fetchBookmarked(token, tripId);
-      fetchTripInfo(token, tripId).then(data => setData(data));
-      fetchFollowed(token, tripId);
-    });
-  }, []);
+    fetchTripInfo(tripId).then(data => setData(data));
+
+    fetchBookmarkCount(tripId);
+    fetchBookmarked(tripId);
+    fetchFollowed();
+  }, [userId, follow]);
   //console.log(data.locationInfo.map(item => console.log(item.place)));
   const goBack = () => {
     navigation.goBack();

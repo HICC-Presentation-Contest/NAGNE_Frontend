@@ -16,18 +16,22 @@ export default function LoggedInNav() {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: 'black',
+          backgroundColor: '#ffffff',
           borderTopColor: 'rgba(255,255,255,0.3)',
+          shadowOpacity: 0.25,
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowRadius: 3.84,
         },
-        tabBarActiveTintColor: 'white',
+        tabBarActiveTintColor: '#0351ea',
       }}
     >
       <Tabs.Screen
         name="HomeNav"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon iconName={'home-outline'} color={color} focused={focused} />
-          ),
+          tabBarIcon: ({ focused, color }) => <Ionicons name={'home-outline'} color={color} size={focused ? 22 : 18} />,
         }}
       >
         {() => <HomeNav />}
@@ -35,7 +39,7 @@ export default function LoggedInNav() {
       <Tabs.Screen
         name="CreateRoute"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
+          tabBarIcon: ({ focused, color }) => (
             <Ionicons name={'add-circle-outline'} color={color} size={focused ? 22 : 18} />
           ),
         }}
@@ -45,7 +49,7 @@ export default function LoggedInNav() {
       <Tabs.Screen
         name="StorageNav"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
+          tabBarIcon: ({ focused, color }) => (
             <Ionicons name={'folder-outline'} color={color} size={focused ? 22 : 18} />
           ),
         }}
@@ -55,7 +59,7 @@ export default function LoggedInNav() {
       <Tabs.Screen
         name="MyNav"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
+          tabBarIcon: ({ focused, color }) => (
             <Ionicons name={'person-outline'} color={color} size={focused ? 22 : 18} />
           ),
         }}

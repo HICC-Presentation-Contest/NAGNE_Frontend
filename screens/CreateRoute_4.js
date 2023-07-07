@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import {
-  Blank24px,
   Button,
   ButtonText,
   Container,
@@ -20,7 +19,6 @@ const CreateRoute_4 = ({ route, navigation }) => {
   let title = route.params.title;
   let region = route.params.region;
   let locations = route.params.locations;
-  // console.log(locations);
   const navigateTo5 = () => {
     navigation.navigate('CreateRoute_5', {
       title,
@@ -29,6 +27,7 @@ const CreateRoute_4 = ({ route, navigation }) => {
       hashtag,
     });
   };
+
   return (
     <CreateRouteLayout>
       <SummaryContainer>
@@ -37,8 +36,8 @@ const CreateRoute_4 = ({ route, navigation }) => {
       </SummaryContainer>
       <Container>
         <Title>해시태그</Title>
-        <Blank24px />
         <Input
+          style={{ marginTop: 24 }}
           autoFocus
           placeholder="#"
           returnKeyType="next"

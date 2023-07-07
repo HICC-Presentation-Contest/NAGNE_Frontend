@@ -1,11 +1,19 @@
 import React, { useRef } from 'react';
-import { Animated } from 'react-native';
+import { Animated, Platform } from 'react-native';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
-import { ScreenWidth } from './Shared';
+import { iOSBoxShadow, ScreenWidth } from './Shared';
 let CardWidth = ScreenWidth * 0.74;
 let CardMargin = (ScreenWidth - CardWidth) / 2;
 let TextContainerHeight = 88;
+const CustomView = styled.View`
+  background-color: ${Platform.select({
+    ios: 'blue', // iOS 플랫폼에 적용할 색상
+    android: 'red', // Android 플랫폼에 적용할 색상
+    default: 'purple', // 기타 플랫폼에 적용할 색상
+  })};
+  padding: 20px;
+`;
 
 const CardContainer = styled.TouchableOpacity`
   width: ${CardWidth}px;
@@ -50,15 +58,17 @@ export default MapThumbnails = ({ ...props }) => {
     });
     return (
       <Animated.View
-        style={{
-          transform: [{ scale }],
-          elevation: 10,
-          backgroundColor: 'white',
-          width: CardWidth,
-          height: '100%',
-          marginRight: CardMargin - 24,
-          borderRadius: 8,
-        }}
+        style={[
+          {
+            transform: [{ scale }],
+            backgroundColor: 'white',
+            width: CardWidth,
+            height: '100%',
+            marginRight: CardMargin - 24,
+            borderRadius: 8,
+          },
+          Platform.select({ ios: iOSBoxShadow, android: { elevation: 10 } }),
+        ]}
       >
         <CardContainer
           // style={{ shadowColor: '#fff', shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.3, shadowRadius: 24 }}

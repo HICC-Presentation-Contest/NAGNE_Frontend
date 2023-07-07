@@ -8,7 +8,7 @@ import CreateRoute_5 from '../screens/CreateRoute_5';
 
 const stack = createNativeStackNavigator();
 
-export default function CreateNoteNav() {
+export default function CreateRouteNav() {
   return (
     <>
       <stack.Navigator
@@ -16,6 +16,7 @@ export default function CreateNoteNav() {
           headerShown: true,
           headerBackImageSource: leftArrow,
           headerTitleAlign: 'center',
+          headerBackTitleVisible: false,
           headerTitleStyle: {
             fontWeight: 'bold',
             fontSize: 16,
