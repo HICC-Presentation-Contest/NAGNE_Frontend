@@ -188,7 +188,7 @@ export default function MyPage({ navigation, route }) {
   const [bio, setBio] = useState();
   const [isEditMode, setIsEditMode] = useState(false);
   const [bookmarkedPosts, setBookmarkedPosts] = useState({});
-  const [userId, setUserId] = useState(route.params.userId);
+  const [userId, setUserId] = useState('');
   const [follow, setFollow] = useState(false);
   const [loggedInUserId, setLoggedInUserId] = useState(7);
 
