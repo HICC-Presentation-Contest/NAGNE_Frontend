@@ -3,7 +3,7 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { useState } from 'react';
 import Auth from './screens/Auth';
 import AppLoading from 'expo-app-loading';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthProvider } from './components/AuthProvider';
 
 const MyTheme = {
   ...DefaultTheme,
@@ -18,12 +18,11 @@ export default function App() {
   const onFinish = () => setLoading(false);
   let [loggedIn, setLoggedIn] = useState(false);
   const preload = async () => {
-    const token = await AsyncStorage.getItem('token');
-    console.log('AsyncStorage 내 토큰 유무:', token);
-    if (token) {
-      console.log('로그인 절차 생략');
-      setLoggedIn(true);
-    }
+    // console.log('AsyncStorage 내 토큰 유무:', token);
+    // if (token) {
+    //   console.log('로그인 절차 생략');
+    //   setLoggedIn(true);
+    // }
   };
 
   if (loading) {
@@ -33,10 +32,10 @@ export default function App() {
     setLoggedIn(true);
   };
   return (
-    <>
+    <AuthProvider>
       <NavigationContainer theme={MyTheme}>
         {loggedIn ? <LoggedInNav /> : <Auth parentFunction={Login} />}
       </NavigationContainer>
-    </>
+    </AuthProvider>
   );
 }

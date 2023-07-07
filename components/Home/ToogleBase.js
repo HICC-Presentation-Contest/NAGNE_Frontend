@@ -6,9 +6,6 @@ import Position from '../../assets/images/position_Active.svg';
 
 const Container = styled.TouchableOpacity`
   flex-direction: row;
-  /* background-color: chartreuse; */
-  width: 80px;
-  /* justify-content: space-between; */
 `;
 const ModeText = styled.Text`
   font-size: 16px;

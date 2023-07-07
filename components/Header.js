@@ -10,13 +10,18 @@ const Container = styled.SafeAreaView`
   justify-content: space-between;
   align-items: center;
   padding: 3%;
-  height: 10%;
+  height: 64px;
 `;
 const Logo = styled.Image`
   height: 40%;
+  width: 40;
+  height: 40;
+  margin-left: 32;
 `;
 const Alarm = styled.Image`
-  height: 50%;
+  width: 24;
+  height: 24;
+  margin-right: 32;
 `;
 export default Header = () => {
   return (

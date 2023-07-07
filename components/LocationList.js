@@ -1,18 +1,25 @@
 import { useRef, useState, useEffect } from 'react';
-import Plus from '../assets/images/add_None.svg';
-import { WithLocalSvg } from 'react-native-svg';
 import * as ImagePicker from 'expo-image-picker';
-import { View, FlatList, Alert, Keyboard } from 'react-native';
+import { View, FlatList, Alert, Keyboard, Platform, StyleSheet, Text } from 'react-native';
 import { styled } from 'styled-components/native';
-import { ScreenWidth } from './Shared';
+import { iOSBoxShadow, ScreenWidth } from './Shared';
 import { Button, ButtonText, Title } from './CreateRoute_Shared';
-import Check from '../assets/images/check.svg';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { API_KEY } from '../PrivateConfig';
 import axios from 'axios';
+import { colors } from '../colors';
 
+//Assets
+import { WithLocalSvg } from 'react-native-svg';
+import marker from '../assets/images/marker.svg';
+import Plus from '../assets/images/add_None.svg';
+import Check from '../assets/images/check.svg';
+import Upload from '../assets/images/uploadImg.svg';
+import Delete from '../assets/images/x.svg';
+
+let ImageHeight = 200;
 const DeleteButton = styled.TouchableOpacity`
-  background-color: grey;
+  /* background-color: ${colors.sub}; */
   height: 32px;
   width: 32px;
   justify-content: center;
@@ -22,37 +29,37 @@ const DeleteButton = styled.TouchableOpacity`
 const DeleteButtonText = styled.Text`
   font-size: 20px;
   font-weight: bold;
-  color: white;
+  color: ${colors.grey};
 `;
 const ImageContainer = styled.View`
   width: 100%;
-  height: 240px;
+  height: ${ImageHeight}px;
 `;
 const RouteContainer = styled.View`
-  margin: 8px 0;
+  margin: 16px 0;
   margin-right: 16px;
   width: ${ScreenWidth * 0.8}px;
-  height: 440px;
-  background-color: #eef4ff;
-  border-radius: 10px;
+  height: 400px;
+  border-radius: 12px;
   padding: 4%;
   margin-bottom: 64px;
+  ${iOSBoxShadow}
 `;
 const LocationContainer = styled.View`
   height: 100%;
   justify-content: flex-start;
 `;
 const LocationTitle = styled.Text`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: #84adff;
+  color: ${colors.grey};
   height: 32px;
-  margin-bottom: 8px;
+  margin: 4px 0px;
 `;
 const LocationImage = styled.Image`
   width: 100%;
-  height: 240px;
-  background-color: #e8e8e8;
+  height: ${ImageHeight}px;
+  background-color: ${colors.base};
   border-radius: 6px;
   margin-bottom: 2px;
 `;
@@ -66,11 +73,12 @@ const LocationAdress = styled.Text`
 const LocationDescription = styled.Text`
   font-size: 16px;
   font-weight: 300;
+  color: ${colors.grey};
 `;
 const LocationInput = styled.TextInput`
   border-radius: 6px;
   padding: 4px;
-  background-color: white;
+  background-color: ${colors.base};
   width: 100%;
   height: 32px;
   margin-bottom: 8px;
@@ -78,19 +86,18 @@ const LocationInput = styled.TextInput`
 const LocationDescriptionInput = styled.TextInput`
   border-radius: 6px;
   padding: 4px;
-  background-color: white;
+  background-color: ${colors.base};
   width: 100%;
   height: 60px;
   margin-bottom: 40px;
 `;
 const LocationAddButton = styled.TouchableOpacity`
   position: absolute;
-  width: 120px;
+  width: 64px;
   height: 64px;
   bottom: -40px;
-  box-shadow: 16px 12px 12px black;
-  border-radius: 12px;
-  left: ${ScreenWidth * 0.375 - 60}px;
+  border-radius: 32px;
+  left: ${ScreenWidth * 0.375 - 32}px;
   justify-content: center;
   align-items: center;
 `;
@@ -99,24 +106,24 @@ const TitleContainer = styled.View`
   justify-content: space-between;
   width: 90%;
   align-items: center;
-  margin-bottom: 16px;
   margin-top: 24px;
 `;
 const DetailText = styled.Text`
   font-size: 16px;
   font-weight: 400;
-  color: #0351ea;
+  color: ${colors.highlight};
 `;
 const StatusText = styled.Text`
-  font-size: 10px;
-  margin-top: 2px;
+  font-size: 12px;
+  margin-top: 4px;
   margin-bottom: 12px;
 `;
 const ImageAddButton = styled.TouchableOpacity`
+  width: 100%;
   justify-content: center;
   align-items: center;
   height: 60px;
-  background-color: white;
+  background-color: ${colors.base};
   border-radius: 6px;
   margin-bottom: 40px;
 `;
@@ -229,19 +236,33 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
     }
     setLocations(newArr);
   };
+  const platformShadowInactive = Platform.select({
+    ios: {
+      boxShadow: 'none',
+      borderRadius: 12,
+      elevation: 'none',
+      backgroundColor: colors.base,
+    },
+    android: {
+      elevation: 0,
+      backgroundColor: colors.base,
+    },
+  });
   const renderItem = ({ item, index }) => (
-    <RouteContainer key={item.name}>
+    <RouteContainer style={{ backgroundColor: 'white' }} key={item.name}>
       {locations[index].saved == true ? (
         <LocationContainer style={{ justifyContent: 'flex-start' }}>
           <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
             <LocationTitle>{locations[index].name}</LocationTitle>
             <DeleteButton onPress={() => removeItem(index)}>
-              <DeleteButtonText>X</DeleteButtonText>
+              <WithLocalSvg width={32} height={32} asset={Delete} />
             </DeleteButton>
           </View>
-          <LocationImage style={{ resizeMode: 'contain' }} source={{ uri: locations[index].image }} />
+          <LocationImage style={{ resizeMode: 'cover' }} source={{ uri: locations[index].image }} />
           <LocationAdress>{locations[index].coordName}</LocationAdress>
-          <LocationDescription style={{ color: 'black' }}>{locations[index].description}</LocationDescription>
+          <LocationDescription style={{ color: 'black' }}>
+            {locations[index].description ? locations[index].description : '작성된 내용 없음'}
+          </LocationDescription>
         </LocationContainer>
       ) : (
         <LocationContainer>
@@ -259,7 +280,7 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
           />
           <ImageContainer>
             {img ? (
-              <LocationImage style={{ resizeMode: 'contain' }} source={{ uri: img }} />
+              <LocationImage style={{ resizeMode: 'cover' }} source={{ uri: img }} />
             ) : (
               <MapView
                 style={{ width: '100%', height: '100%' }}
@@ -272,7 +293,11 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
                 provider={PROVIDER_GOOGLE}
                 onLongPress={handleLongPress}
               >
-                {coord && <Marker coordinate={coord} draggable onDragEnd={e => handleMarkerDragEnd(e)} />}
+                {coord && (
+                  <Marker coordinate={coord} draggable onDragEnd={e => handleMarkerDragEnd(e)}>
+                    <WithLocalSvg width={40} height={40} asset={marker} />
+                  </Marker>
+                )}
               </MapView>
             )}
           </ImageContainer>
@@ -284,7 +309,7 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
           {img && (
             <LocationDescriptionInput
               value={description}
-              placeholder="설명"
+              placeholder="내용을 작성해주세요"
               returnKeyType="done"
               blurOnSubmit={false}
               onSubmitEditing={() => {
@@ -295,35 +320,26 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
           )}
           {coord && !img && (
             <ImageAddButton onPress={() => selectImage(index)}>
-              <WithLocalSvg width={32} height={32} asset={Plus} />
+              <WithLocalSvg color={colors.grey} width={32} height={32} asset={Upload} />
             </ImageAddButton>
           )}
-
           <LocationAddButton
             disabled={name && coord && img ? false : true}
             style={
               name && coord && img
                 ? {
-                    elevation: 2,
-                    backgroundColor: 'white',
+                    backgroundColor: colors.highlight,
                   }
                 : {
-                    elevation: 0,
-                    backgroundColor: '#D9D9D9',
+                    ...platformShadowInactive,
                   }
             }
             onPress={updateLocation}
           >
             <WithLocalSvg
-              style={
-                name && coord && img
-                  ? { color: '#0351EA' }
-                  : {
-                      color: '#AAAAAA',
-                    }
-              }
-              width={40}
-              height={40}
+              style={name && coord && img ? { color: 'white' } : { color: '#AAAAAA' }}
+              width={32}
+              height={32}
               asset={Check}
             />
           </LocationAddButton>
@@ -337,10 +353,14 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
     <View style={{ width: ScreenWidth, marginLeft: '-6%', alignItems: 'center' }}>
       <TitleContainer>
         <Title>경로를 입력해주세요 (최대 5개)</Title>
-        <DetailText>{locations.filter(item => item.saved == true).length}/5</DetailText>
+        <DetailText>
+          {locations.filter(item => item.saved == true).length}/5 {'>>'}
+        </DetailText>
       </TitleContainer>
       <FlatList
+        style={{ width: '100%' }}
         horizontal
+        contentContainerStyle={{ paddingLeft: 32 }}
         data={locations}
         renderItem={renderItem}
         keyExtractor={item => item.name}
@@ -354,13 +374,17 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
       <Button
         style={
           noValidLocation && {
-            backgroundColor: '#D9D9D9',
+            backgroundColor: colors.base,
           }
         }
         disabled={noValidLocation ? true : false}
         onPress={handleSubmit}
       >
-        <ButtonText style={noValidLocation ? { color: '#747474' } : { color: 'white' }}>다음</ButtonText>
+        <ButtonText
+          style={noValidLocation ? { fontWeight: 400, color: '#747474' } : { fontWeight: 800, color: 'white' }}
+        >
+          다음
+        </ButtonText>
       </Button>
     </View>
   );

@@ -3,10 +3,11 @@ import { Button, ButtonText, CreateRouteLayout } from '../components/CreateRoute
 import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
 import { styled } from 'styled-components/native';
-import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 import { View, Text } from 'react-native';
 import { getToken } from '../components/Shared';
+import { CommonActions } from '@react-navigation/native';
 
 const MapContainer = styled.View`
   margin-top: 40px;
@@ -17,7 +18,7 @@ const MapContainer = styled.View`
   height: 400px;
 `;
 
-const CreateRoute_5 = ({ route }) => {
+const CreateRoute_5 = ({ route, navigation }) => {
   const [mapSnapshot, setMapSnapshot] = useState(null);
   let url = 'http://3.37.189.80/trip';
   const uploadDatas = async (hashtag, title, region, locations, Thumbnail) => {
@@ -56,13 +57,14 @@ const CreateRoute_5 = ({ route }) => {
     };
 
     try {
-      const formData = await processData();
       getToken().then(token => {
-        axios
-          .post(url, formData, {
-            headers: { Authorization: token, 'Content-Type': 'multipart/form-data' },
-          })
-          .then(response => console.log('response for createRoute', response.config.data));
+        processData().then(formData => {
+          axios
+            .post(url, formData, {
+              headers: { Authorization: token, 'Content-Type': 'multipart/form-data' },
+            })
+            .then(response => console.log('response for createRoute', response.config.data));
+        });
       });
     } catch (error) {
       console.error('Error:', error);
@@ -90,7 +92,7 @@ const CreateRoute_5 = ({ route }) => {
   const adjustMapView = () => {
     if (mapRef.current) {
       mapRef.current.fitToCoordinates(coordinates, {
-        edgePadding: { top: 64, right: 32, bottom: 32, left: 32 },
+        edgePadding: { top: 64, right: 64, bottom: 64, left: 64 },
         animated: true,
       });
     }
@@ -106,6 +108,10 @@ const CreateRoute_5 = ({ route }) => {
     }, 2000);
   }, []);
   const mapRef = useRef(null);
+  const goBackHome = () => {
+    navigation.reset({ routes: [{ name: 'Home' }] });
+    navigation.navigate('Home');
+  };
 
   return (
     <CreateRouteLayout>
@@ -120,7 +126,7 @@ const CreateRoute_5 = ({ route }) => {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
-          provider={PROVIDER_GOOGLE}
+          provider={PROVIDER_DEFAULT}
         >
           {coordinates.map((coordinate, index) => (
             <Marker key={index} coordinate={coordinate}>
@@ -141,7 +147,7 @@ const CreateRoute_5 = ({ route }) => {
           <Polyline coordinates={coordinates} strokeWidth={2} strokeColor="#0351ea" />
         </MapView>
       </MapContainer>
-      <Button style={{ marginBottom: 80 }}>
+      <Button onPress={goBackHome} style={{ marginBottom: 80 }}>
         <ButtonText>홈화면으로 돌아가기</ButtonText>
       </Button>
     </CreateRouteLayout>

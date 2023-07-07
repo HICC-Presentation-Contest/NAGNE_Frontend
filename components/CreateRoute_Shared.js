@@ -10,8 +10,8 @@ export const CreateRouteLayout = styled.SafeAreaView`
   flex: 1;
   /* background-color: chartreuse; */
 `;
-export const Blank24px = styled.View`
-  height: 24px;
+export const Blank16px = styled.View`
+  height: 16px;
   width: 100%;
 `;
 export const Container = styled.SafeAreaView`

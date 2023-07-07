@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import MapThumbnails from '../components/MapThumbnails';
 import axios from 'axios';
 import Header from '../components/Header';
 import { styled } from 'styled-components/native';
-import { getToken, ScreenHeight, ScreenWidth } from '../components/Shared';
+import { ScreenHeight, ScreenWidth } from '../components/Shared';
 import ToogleBase from '../components/Home/ToogleBase';
 import * as Location from 'expo-location';
 import { WithLocalSvg } from 'react-native-svg';
 import LocationIcon from '../assets/images/location.svg';
 import { API_KEY } from '../PrivateConfig';
+import { AuthContext } from '../components/AuthProvider';
 import Back from '../assets/appBack.jpg';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Image } from 'react-native';
 
 const ScreenLayout = styled.SafeAreaView`
@@ -18,7 +18,6 @@ const ScreenLayout = styled.SafeAreaView`
   justify-content: space-between;
   align-items: center;
   flex: 1;
-  margin-top: 8%;
   width: ${ScreenWidth}px;
 `;
 const UpperBase = styled.View`
@@ -29,12 +28,13 @@ const UpperBase = styled.View`
 const CardTypeContainer = styled.View`
   align-items: center;
   justify-content: center;
-  height: 8%;
+  height: 40px;
   flex-direction: row;
   width: 70%;
 `;
 const ThumbnailsContainer = styled.View`
-  height: 540px;
+  height: 520px;
+  margin-bottom: 16px;
 `;
 const LocationContainer = styled.View`
   height: 48px;
@@ -64,6 +64,7 @@ const Home = ({ navigation }) => {
   let [popularData, setPopularData] = useState(null);
   let [mode, setMode] = useState(0);
   const [location, setLocation] = useState(null);
+  const { token, setToken } = useContext(AuthContext);
 
   const fetchMyLocationData = async (Token, longitude, latitude, pageable) => {
     try {
@@ -126,24 +127,25 @@ const Home = ({ navigation }) => {
         setLocation('Permission to access location was denied');
         return;
       }
-      let location = await Location.getCurrentPositionAsync({});
-      getToken().then(token => {
-        fetchMyLocationData(token, longitude, latitude, pageable).then(data => setMyLocationData(data));
-        fetchPopularData(token, longitude, latitude, pageable).then(data => setPopularData(data));
+      //토큰 받고 난후, 바로 위치정보값을 가져옴
+      await Location.getCurrentPositionAsync({}).then(location => {
+        //토큰과 위치정보값을 사용하여 나머지 정보들을 가져옴
+        // const latitude = location.coords.latitude;
+        // const longitude = -location.coords.longitude;
+        const latitude = 37;
+        const longitude = 126;
+        const pageable = { page: 0, size: 20 };
+        console.log('현재 사용자 위치:', latitude, longitude, token);
+        fetchMyLocationData(JSON.parse(token), longitude, latitude, pageable).then(data => setMyLocationData(data));
+        fetchPopularData(JSON.parse(token), longitude, latitude, pageable).then(data => setPopularData(data));
+        getDistrictFromCoordinates(location.coords.latitude, location.coords.longitude).then(district => {
+          console.log('district:', district);
+          setLocation(district);
+        });
       });
-      const latitude = location.coords.latitude;
-      const longitude = location.coords.longitude;
-
-      // const latitude = 37;
-      // const longitude = 126;
-      console.log('현재 사용자 위치:', longitude, latitude);
-      const pageable = { page: 0, size: 20 };
-
-      getDistrictFromCoordinates(latitude, longitude).then(district => {
-        setLocation(district);
-      });
+      // });
     })();
-  }, []);
+  }, [token]);
   return (
     <>
       <Image
