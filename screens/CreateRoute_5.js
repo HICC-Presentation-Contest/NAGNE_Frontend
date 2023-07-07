@@ -7,13 +7,13 @@ import MapView, { Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 import { View, Text } from 'react-native';
 import { Platform } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
 import { AuthContext } from '../components/AuthProvider';
 
 const MapContainer = styled.View`
   margin-top: 40px;
   elevation: 9;
   background-color: white;
-  /* box-shadow: 24px 16px 16px black; */
   width: 300px;
   height: 400px;
 `;
@@ -113,8 +113,7 @@ const CreateRoute_5 = ({ route, navigation }) => {
 
   const mapRef = useRef(null);
   const goBackHome = () => {
-    navigation.reset({ routes: [{ name: 'Home' }] });
-    navigation.navigate('Home');
+    navigation.reset({ routes: [{ name: 'HomeNav' }] });
   };
 
   return (

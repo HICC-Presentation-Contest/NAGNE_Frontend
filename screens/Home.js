@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import MapThumbnails from '../components/MapThumbnails';
 import axios from 'axios';
 import Header from '../components/Header';
@@ -9,9 +9,8 @@ import * as Location from 'expo-location';
 import { WithLocalSvg } from 'react-native-svg';
 import LocationIcon from '../assets/images/location.svg';
 import { API_KEY } from '../PrivateConfig';
-
 import { AuthContext } from '../components/AuthProvider'; //**
-
+import { useIsFocused } from '@react-navigation/native';
 import Back from '../assets/appBack.jpg';
 import { Image } from 'react-native';
 
@@ -61,11 +60,15 @@ const LocationText = styled.Text`
   width: 100%;
   color: #0351ea;
 `;
-const Home = ({ navigation }) => {
+const Home = ({ route, navigation }) => {
+  const isFocused = useIsFocused();
+  console.log('isFocused:', isFocused);
   let [myLocationData, setMyLocationData] = useState(null);
   let [popularData, setPopularData] = useState(null);
   let [mode, setMode] = useState(0);
   const [location, setLocation] = useState(null);
+  let [refresh, setRefresh] = useState(false);
+
   const { token, setToken } = useContext(AuthContext);
 
   const fetchMyLocationData = async (Token, longitude, latitude, pageable) => {
@@ -122,6 +125,7 @@ const Home = ({ navigation }) => {
   const navigateToRoutePage = tripId => {
     navigation.navigate('RoutePage', { tripId });
   };
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -141,7 +145,7 @@ const Home = ({ navigation }) => {
         getDistrictFromCoordinates(location.coords.latitude, location.coords.longitude);
       });
     })();
-  }, [token]);
+  }, [token, isFocused]);
   return (
     <>
       <Image
