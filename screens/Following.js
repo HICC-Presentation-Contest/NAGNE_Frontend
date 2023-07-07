@@ -45,26 +45,23 @@ const ProfilePicture = styled.Image`
 `;
 
 export default function Follower({ navigation, route }) {
-  const [userList, setUserList] = useState(dummy.content);
+  const [userList, setUserList] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [originalList, setOriginalList] = useState(''); // 원래의 목록을 저장하는 상태 추가
   const userId = route.params.userId;
-
-  useEffect(() => {
-    const infos = dummy.content || [];
-    setUserList(infos);
-  }, [dummy.content]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         getToken().then(token => {
           axios
-            .get(`http://3.37.189.80/follow/following/${userId}?page=0&size=10`, {
+            .get(`http://3.37.189.80/follow/following/${userId}?page=0&size=100`, {
               headers: { Authorization: token },
             })
             .then(response => {
               console.log('팔로잉 데이터 get 반응값:', response.data);
               setUserList(response.data.content);
+              setOriginalList(response.data.content); // 원래의 목록 저장
             });
         });
         // Perform necessary actions with the response data
@@ -76,8 +73,9 @@ export default function Follower({ navigation, route }) {
   }, [userId]);
 
   const performSearch = query => {
-    const filteredList = dummy.content.filter(info => info.name.toLowerCase().includes(query.toLowerCase()));
+    const filteredList = originalList.filter(info => info.name.toLowerCase().includes(query.toLowerCase()));
     setUserList(filteredList);
+    setSearchQuery(query); // 검색어 상태 업데이트
   };
 
   const renderItem = ({ item: info }) => {
@@ -107,7 +105,6 @@ export default function Follower({ navigation, route }) {
           }}
         />
       </SearchContainer>
-
       <FlatList data={userList} keyExtractor={item => item.userId} renderItem={renderItem} />
     </Container>
   );
