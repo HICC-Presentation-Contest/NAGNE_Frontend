@@ -33,7 +33,8 @@ const Container = styled.View`
 `;
 const LOGOText = styled.Text`
   font-size: 50px;
-  font-weight: bold;
+  font-weight: 900;
+  letter-spacing: 2px;
   color: ${colors.highlight};
   margin-bottom: 40px;
   margin-top: -80px;
@@ -45,12 +46,16 @@ const GoogleImg = styled.Image`
 `;
 const HelloText = styled.Text`
   font-size: 32px;
-  font-weight: bold;
-  margin-top: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5;
+  margin-top: 12px;
+  color: #222222;
 `;
 const WelcomeText = styled.Text`
   font-size: 16px;
-  margin-top: 10;
+  margin-top: 8px;
+  font-weight: 300;
+  letter-spacing: 0.4;
 `;
 const LoginButton = styled.TouchableOpacity`
   background-color: #f7f7f7;
@@ -64,8 +69,9 @@ const LoginButton = styled.TouchableOpacity`
 `;
 const LoginText = styled.Text`
   font-size: 16px;
-  color: black;
+  color: #747474;
   margin-right: 50px;
+  font-weight: bold;
 `;
 
 const Auth = ({ parentFunction }) => {
