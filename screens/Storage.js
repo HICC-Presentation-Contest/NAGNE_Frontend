@@ -22,7 +22,7 @@ const MapContainer = styled.View`
   background-color: white;
 `;
 
-const Map = styled.View`
+const Map = styled.TouchableOpacity`
   width: 170px;
   height: 176px;
   margin-left: 10px;
@@ -31,7 +31,7 @@ const Map = styled.View`
   border-radius: 5px;
 `;
 
-export default function Storage() {
+export default function Storage({ navigation }) {
   const [post, setPost] = useState();
 
   let JWTToken =
@@ -60,7 +60,7 @@ export default function Storage() {
 
   const renderItem = ({ item: post }) => {
     return (
-      <Map key={post.tripId}>
+      <Map key={post.tripId} onPress={() => navigation.push('RoutePage', { tripId: post.tripId })}>
         <Image
           style={{ width: 168, height: 174, borderRadius: 5 }}
           source={{

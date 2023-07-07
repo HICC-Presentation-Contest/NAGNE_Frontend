@@ -4,7 +4,8 @@ import CreateNoteNav from './CreateRouteNav';
 import MyNav from './MyNav';
 import HomeNav from './HomeNav';
 import TabIcon from '../components/nav/TabIcon';
-import Storage from '../screens/Storage';
+
+import StorageNav from './StorageNav';
 
 const Tabs = createBottomTabNavigator();
 
@@ -42,14 +43,15 @@ export default function LoggedInNav() {
         {() => <CreateNoteNav />}
       </Tabs.Screen>
       <Tabs.Screen
-        name="Storage"
+        name="StorageNav"
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons name={'folder-outline'} color={color} size={focused ? 22 : 18} />
           ),
         }}
-        component={Storage}
-      />
+      >
+        {() => <StorageNav />}
+      </Tabs.Screen>
       <Tabs.Screen
         name="MyNav"
         options={{

@@ -131,11 +131,11 @@ const Home = ({ navigation }) => {
         fetchMyLocationData(token, longitude, latitude, pageable).then(data => setMyLocationData(data));
         fetchPopularData(token, longitude, latitude, pageable).then(data => setPopularData(data));
       });
-      const latitude = location.coords.latitude;
-      const longitude = location.coords.longitude;
+      // const latitude = location.coords.latitude;
+      // const longitude = location.coords.longitude;
 
-      // const latitude = 37;
-      // const longitude = 126;
+      const latitude = 37;
+      const longitude = 126;
       console.log('현재 사용자 위치:', longitude, latitude);
       const pageable = { page: 0, size: 20 };
 
