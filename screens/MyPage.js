@@ -217,27 +217,32 @@ export default function MyPage({ navigation, route }) {
     }
   }, [route]);
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`http://3.37.189.80/user?userId=${userId}`, {
+        headers: { Authorization: token },
+      });
+      console.log('유저 페이지 정보 조회', response.data);
+      setUserInfo(response.data);
+      setBio(response.data.description);
+      navigation.setOptions({
+        title: response.data.name, // userId에 해당하는 사용자의 이름으로 헤더 타이틀을 설정
+      });
+      // Perform necessary actions with the response data
+    } catch (error) {
+      console.error(error); // Error handling
+    }
+  };
   //유저 페이지 정보 조회
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://3.37.189.80/user?userId=${userId}`, {
-          headers: { Authorization: token },
-        });
-        console.log('유저 페이지 정보 조회', response.data);
-        setUserInfo(response.data);
-        setBio(response.data.description);
-        navigation.setOptions({
-          title: response.data.name, // userId에 해당하는 사용자의 이름으로 헤더 타이틀을 설정
-        });
-        // Perform necessary actions with the response data
-      } catch (error) {
-        console.error(error); // Error handling
-      }
-    };
-
     fetchData();
-  }, [userId, follow]);
+    // navigation.addListener를 사용하여 화면으로 돌아왔을 때 데이터를 다시 가져오도록 설정합니다.
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData();
+    });
+    // 언마운트될 때 리스너를 정리합니다.
+    return unsubscribe;
+  }, [userId, follow, navigation]);
 
   useEffect(() => {
     console.log('받아온 유저 id', userId);
