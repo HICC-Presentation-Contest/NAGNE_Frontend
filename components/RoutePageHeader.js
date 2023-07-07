@@ -4,6 +4,7 @@ import leftArrow from '../assets/images/left_arrow.png';
 
 import { styled } from 'styled-components/native';
 import { Image } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 const Container = styled.SafeAreaView`
   width: 100%;
@@ -20,13 +21,22 @@ const BackButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
 `;
+
+const NameButton = styled.TouchableOpacity`
+  width: 60%;
+  height: 64px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 22px;
+`;
+
 const FollowButton = styled.TouchableOpacity`
   height: 50%;
   width: 72px;
   height: 36px;
   border: #747474;
   color: black;
-  margin-right: 8px;
+
   border-radius: 18px;
   justify-content: center;
   align-items: center;
@@ -45,7 +55,7 @@ const UserText = styled.Text`
   text-align: center;
   left: 25%;
 `;
-const RoutePageHeader = ({ userId, followed, onPress, onPressBack }) => {
+const RoutePageHeader = ({ userId, followed, onPress, onPressBack, onPressName }) => {
   const handleClick = () => {
     onPress();
   };
@@ -57,10 +67,12 @@ const RoutePageHeader = ({ userId, followed, onPress, onPressBack }) => {
       <BackButton onPress={handleBack}>
         <Image style={{ width: 28, height: 28 }} source={leftArrow}></Image>
       </BackButton>
+      <NameButton onPress={onPressName}>
+        <UserText>{userId}</UserText>
+      </NameButton>
       <FollowButton style={followed && { backgroundColor: '#0351EA' }} onPress={handleClick}>
         <FollowText style={followed && { color: 'white' }}>{followed ? '언팔로우' : '팔로우'}</FollowText>
       </FollowButton>
-      <UserText>{userId}</UserText>
     </Container>
   );
 };
