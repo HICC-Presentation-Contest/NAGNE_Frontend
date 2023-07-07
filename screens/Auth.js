@@ -17,7 +17,7 @@ const addToken = async (code, setToken) => {
   await axios.get(url + queryStr).then(response => {
     // AsyncStorage.setItem('token', JSON.stringify(response.data.accessToken));
     setToken(response.data.accessToken);
-    console.log('useContext의 setToken 실행되었음', JSON.stringify(response.data.accessToken));
+    console.log('useContext의 setToken 실행되었음', response.data.accessToken);
   });
 };
 
