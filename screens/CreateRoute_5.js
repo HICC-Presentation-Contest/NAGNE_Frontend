@@ -4,11 +4,11 @@ import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
 import { styled } from 'styled-components/native';
 import MapView, { Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps';
-import ViewShot, { captureRef } from 'react-native-view-shot';
+import { captureRef } from 'react-native-view-shot';
 import { View, Text } from 'react-native';
 import { Platform } from 'react-native';
-import { CommonActions } from '@react-navigation/native';
 import { AuthContext } from '../components/AuthProvider';
+import { colors } from '../colors';
 
 const MapContainer = styled.View`
   margin-top: 40px;
@@ -18,9 +18,24 @@ const MapContainer = styled.View`
   height: 400px;
 `;
 
+const BackButton = styled.TouchableOpacity`
+  padding: 16px;
+  margin-bottom: 120px;
+`;
+const BackText = styled.Text`
+  font-weight: 700;
+  font-size: 16px;
+  color: ${colors.highlight};
+`;
+const ResultText = styled.Text`
+  margin-top: 64px;
+  font-weight: 900;
+  font-size: 24px;
+  color: black;
+`;
+
 const CreateRoute_5 = ({ route, navigation }) => {
   const { token, setToken } = useContext(AuthContext);
-  const [mapSnapshot, setMapSnapshot] = useState(null);
   let url = 'http://3.37.189.80/trip';
   const uploadDatas = async (hashtag, title, region, locations, Thumbnail) => {
     const processData = async () => {
@@ -108,7 +123,7 @@ const CreateRoute_5 = ({ route, navigation }) => {
     let locations = route.params.locations;
     setTimeout(() => {
       takeSnapshot().then(result => uploadDatas(hashtag, title, region.name, locations, result));
-    }, 2000);
+    }, 1000);
   }, []);
 
   const mapRef = useRef(null);
@@ -117,7 +132,7 @@ const CreateRoute_5 = ({ route, navigation }) => {
   };
 
   return (
-    <CreateRouteLayout>
+    <CreateRouteLayout style={{ justifyContent: 'space-between' }}>
       <MapContainer>
         <MapView
           ref={mapRef}
@@ -150,9 +165,10 @@ const CreateRoute_5 = ({ route, navigation }) => {
           <Polyline coordinates={coordinates} strokeWidth={2} strokeColor="#0351ea" />
         </MapView>
       </MapContainer>
-      <Button onPress={goBackHome} style={{ marginBottom: 80 }}>
-        <ButtonText>홈화면으로 돌아가기</ButtonText>
-      </Button>
+      <ResultText>경로작성이 완료되었습니다!</ResultText>
+      <BackButton onPress={goBackHome}>
+        <BackText>홈화면으로 돌아가기</BackText>
+      </BackButton>
     </CreateRouteLayout>
   );
 };

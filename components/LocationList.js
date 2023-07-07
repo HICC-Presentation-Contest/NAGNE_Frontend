@@ -173,14 +173,18 @@ export const LocationList = ({ routeName, routeRegion, parentFunction }) => {
   const removeItem = index => {
     let originArr = [...locations];
     let filteredArr = originArr.filter((_, i) => i !== index);
-    filteredArr.push({
-      name: '',
-      coord: '',
-      image: '',
-      coordName: '',
-      description: '',
-      saved: false,
-    });
+    //false인 요소가 존재하지 않는다면 = 인풋카드가 없으며, 5
+    if (filteredArr.filter(item => item.saved == false).length != 0 || filteredArr.length >= 5) {
+    } else {
+      filteredArr.push({
+        name: '',
+        coord: '',
+        image: '',
+        coordName: '',
+        description: '',
+        saved: false,
+      });
+    }
     setLocations(filteredArr);
     setName('');
     setDescription('');
