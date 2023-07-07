@@ -10,6 +10,9 @@ import PathList from '../components/PathList';
 import Bookmark from '../assets/images/bookmark_Active.svg';
 import { Platform } from 'react-native';
 import { AuthContext } from '../components/AuthProvider';
+import bookmarkedIcon from '../assets/bookmarked.png';
+import nonBookmarkedIcon from '../assets/non-bookmarked.png';
+import { Image } from 'react-native';
 
 let diagramRadius = 40;
 const ScreenLayout = styled.SafeAreaView`
@@ -103,10 +106,6 @@ const RoutePage = ({ route, navigation }) => {
   let [bookmarked, setBookmarked] = useState(false);
   let [bookmarkCount, setBookmarkCount] = useState('');
   const { token, setToken } = useContext(AuthContext);
-<<<<<<< HEAD
-  // const myToken = JSON.parse(token);
-=======
->>>>>>> 7e0c7c6 (UploadImgBugFix)
   const myToken = token;
   const [userId, setUserId] = useState('');
   const handleBookmarkPressed = async tripId => {
@@ -179,7 +178,7 @@ const RoutePage = ({ route, navigation }) => {
     fetchBookmarkCount(tripId);
     fetchBookmarked(tripId);
     fetchFollowed();
-  }, [userId, follow]);
+  }, [userId, follow, bookmarked]);
   //console.log(data.locationInfo.map(item => console.log(item.place)));
   const goBack = () => {
     navigation.goBack();
@@ -208,7 +207,7 @@ const RoutePage = ({ route, navigation }) => {
           <TitleText>{data.title}</TitleText>
           <BookmarkContainer onPress={() => handleBookmarkPressed(route.params.tripId)}>
             <BookmarkText>{bookmarkCount}</BookmarkText>
-            <WithLocalSvg style={bookmarked && { color: '#0351ea' }} width={26} height={26} asset={Bookmark} />
+            <Image style={{ width: 24, height: 24 }} source={bookmarked ? bookmarkedIcon : nonBookmarkedIcon} />
           </BookmarkContainer>
         </TitleContainer>
       </ScreenLayout>
